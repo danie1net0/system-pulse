@@ -1,255 +1,230 @@
-# System Pulse
+<div align="center">
 
-Anteriormente chamado RAM Widget. O nome exibido agora é **System Pulse**.
-O UUID `ram-widget@local`, o schema e o caminho GSettings, e o identificador do
-atalho instalado são mantidos por compatibilidade: suas preferências, ativação
-e favoritos continuam válidos. O diretório deste checkout pode continuar com
-o nome antigo; a instalação não depende do nome da pasta do projeto.
+<sub><b>🇧🇷 Português</b> · <a href="README.en.md">🇺🇸 English</a></sub>
 
-Extensão para GNOME Shell 50, escrita em TypeScript. Mostra CPU e RAM na barra
-superior e, no menu, RAM utilizável, swap e ranking de processos por RAM ou CPU.
+<img src="assets/readme-banner.svg" alt="System Pulse — o pulso do seu sistema, sempre à vista na barra do GNOME" width="100%">
 
-## Recursos
+<br>
 
-- Ranking por **RAM (RSS)** ou **CPU (atividade recente)**, selecionável no menu.
-- **Preferências…**: intervalo de 1–60 segundos, 1–20 processos e barra com CPU,
-  RAM ou ambos. As alterações são persistidas e aplicadas imediatamente.
-- **Abrir Monitor do Sistema** abre o aplicativo do GNOME.
-- **Remover da barra** desativa o widget; o atalho com mascote o adiciona novamente.
+<p>
+  <img src="https://img.shields.io/badge/GNOME_Shell-50-4A86CF?style=for-the-badge&logo=gnome&logoColor=white" alt="GNOME Shell 50">
+  <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript em modo strict">
+  <img src="https://img.shields.io/badge/Node.js-24+-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 24 ou superior">
+  <img src="https://img.shields.io/badge/cobertura-100%25-54E1C1?style=for-the-badge" alt="Cobertura de testes de 100%">
+</p>
 
-O padrão é CPU e RAM na barra, atualização a cada 2 segundos e 5 processos por RAM.
+**CPU, memória e os processos que mais consomem — direto na barra superior do GNOME.**<br>
+<sub>Leve, sem dependências em execução e com tudo configurável a um clique.</sub>
 
-## Instalar
+<p>
+  <a href="#-instalação-rápida"><b>Instalar</b></a> ·
+  <a href="#-usar">Usar</a> ·
+  <a href="#-métricas">Métricas</a> ·
+  <a href="#-desenvolver">Desenvolver</a> ·
+  <a href="#-verificar">Verificar</a>
+</p>
 
-Com Node.js 24 ou superior e npm disponíveis, execute na pasta do projeto:
+<br>
+
+<img src="assets/readme-preview.svg" alt="Prévia: a barra superior mostra CPU 12% · RAM 41% e o menu aberto lista CPU, RAM, swap e os cinco processos que mais usam memória" width="100%">
+
+</div>
+
+<br>
+
+## ✨ Destaques
+
+<table>
+  <tr>
+    <td width="33%" valign="top">
+      <h3>📈 De relance</h3>
+      CPU, RAM ou ambos na barra superior, atualizados a cada <b>1 a 60 segundos</b>.
+    </td>
+    <td width="33%" valign="top">
+      <h3>🔍 Em detalhe</h3>
+      Memória utilizável, swap e o ranking de processos por <b>RAM (RSS)</b> ou <b>CPU recente</b>.
+    </td>
+    <td width="33%" valign="top">
+      <h3>⚙️ Do seu jeito</h3>
+      Escolha o conteúdo da barra e de <b>1 a 20 processos</b>. Tudo é aplicado na hora.
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <h3>🪶 Leve</h3>
+      Processos só são lidos com o menu aberto, de forma assíncrona e cancelável.
+    </td>
+    <td width="33%" valign="top">
+      <h3>🛟 Seguro</h3>
+      Atualizações com backup automático e restauração em caso de falha.
+    </td>
+    <td width="33%" valign="top">
+      <h3>🧪 Confiável</h3>
+      100% de cobertura de linhas, branches e funções, em TypeScript estrito.
+    </td>
+  </tr>
+</table>
+
+> [!TIP]
+> **Configuração padrão:** CPU e RAM na barra · atualização a cada **2 segundos** ·
+> os **5 processos** que mais usam RAM.
+
+## 🚀 Instalação rápida
+
+Na pasta do projeto, **sem `sudo`**:
 
 ```sh
 node install.ts
 ```
 
-O instalador verifica GNOME Shell 50 e as dependências, executa `npm ci` e o build,
-copia somente os arquivos de execução, instala o mascote e cria o atalho
-**System Pulse — Adicionar à barra**. Ao final, tenta habilitar a extensão.
-Também pode ser executado com `npm run setup`.
+Pronto. O instalador verifica o ambiente, instala as dependências npm, compila o
+projeto, copia os arquivos, instala o mascote, cria o atalho
+**System Pulse — Adicionar à barra** e tenta habilitar a extensão.
 
-Para incluir o Monitor do Sistema no Ubuntu/Debian:
+> [!NOTE]
+> **O widget não apareceu?** Se o GNOME ainda não reconhecer a extensão, salve seu
+> trabalho, saia da sessão e entre novamente. Depois, abra o atalho ou execute
+> `gnome-extensions enable ram-widget@local`.
+
+### Requisitos
+
+| | Requisito | Para quê |
+|:-:| --- | --- |
+| 🐧 | Linux com **GNOME Shell 50** | Executar a extensão. |
+| 🟢 | **Node.js 24+** e **npm** | Executar o instalador e compilar o TypeScript. |
+| 📋 | **`ps`**, do pacote `procps` | Consultar os processos. |
+| 🧩 | **`glib-compile-schemas`** (`libglib2.0-bin` no Ubuntu) | Compilar as preferências GSettings. |
+| 📊 | **Monitor do Sistema** <sub>opcional</sub> | Usar o botão que abre o aplicativo do GNOME. |
+
+As dependências ausentes são informadas antes da instalação; o Node.js não é
+instalado automaticamente. Depois de compilado, o widget roda no GJS do GNOME —
+Node.js e `node_modules` servem apenas às ferramentas do projeto.
+
+### Opções do instalador
+
+| Opção | Efeito |
+| --- | --- |
+| `--dev` | Instala um link para este checkout, para desenvolvimento. |
+| `--skip-build` | Usa um build existente, sem executar `npm ci` nem compilar. |
+| `--with-system-monitor` | Instala também o Monitor do Sistema via `sudo apt-get`, se necessário. |
+| `--dest-dir CAMINHO` | Instala em outra pasta, sem ativar a extensão nem atualizar o catálogo da sessão. |
+| `--help` | Exibe a ajuda. |
 
 ```sh
+# Incluir o Monitor do Sistema (Ubuntu/Debian) — única opção que usa sudo
 node install.ts --with-system-monitor
-```
 
-Execute o instalador **sem sudo**. Apenas essa opção usa `sudo apt-get` e pede sua
-senha quando o Monitor não está instalado. As demais dependências ausentes são
-informadas antes da instalação; Node.js não é instalado automaticamente.
-
-Para manter o projeto conectado à instalação durante o desenvolvimento:
-
-```sh
-node install.ts --dev
-```
-
-O modo normal instala uma cópia independente do projeto. Se já existir um link
-de desenvolvimento, ele será substituído por essa cópia. Use `--dev` para manter
-o comportamento de editar, compilar e recarregar diretamente deste checkout.
-
-Outras opções:
-
-```sh
-node install.ts --skip-build                  # usa um build já preparado; sem npm ci
+# Validar uma instalação em pasta temporária, com o build já preparado
 node install.ts --skip-build --dest-dir /tmp/system-pulse-teste
-node install.ts --help
 ```
 
-`--dest-dir` instala em uma pasta alternativa, sem ativar a extensão ou atualizar
-o catálogo de aplicativos da sessão. É útil para validar a instalação.
+O Monitor do Sistema também pode ser instalado à parte com
+`sudo apt install gnome-system-monitor`, e `npm run setup` é um atalho para o instalador.
 
-A instalação normal usa `$XDG_DATA_HOME` quando é um caminho absoluto, ou
-`~/.local/share` por padrão. Em atualizações, a instalação anterior, o ícone e o
-atalho são preservados em `system-pulse/backups/` dentro desse diretório. O arquivo
-`restore.json` do backup indica o destino original de cada item. Se ocorrer erro
-durante a substituição, o instalador tenta restaurar automaticamente os arquivos
+<details>
+<summary><b>📁 Destino da instalação, atualizações e backups</b></summary>
+
+<br>
+
+A instalação usa `$XDG_DATA_HOME` quando ele é um caminho absoluto, ou
+`~/.local/share` por padrão.
+
+| Item | Caminho relativo ao diretório de dados |
+| --- | --- |
+| Extensão | `gnome-shell/extensions/ram-widget@local/` |
+| Atalho | `applications/ram-widget-enable.desktop` |
+| Mascote | `icons/hicolor/512x512/apps/system-pulse.png` |
+| Backups | `system-pulse/backups/` |
+
+O modo normal instala uma cópia independente do projeto. Se houver um link de
+desenvolvimento, ele será substituído pela cópia; use `--dev` para manter o link.
+
+Em atualizações, a extensão anterior, o ícone e o atalho são preservados em um
+backup, e o arquivo `restore.json` registra o destino original de cada item. Se
+ocorrer erro durante a substituição, o instalador tenta restaurar os arquivos
 anteriores. As preferências GSettings são preservadas.
 
-Se o GNOME ainda não reconhecer a extensão, entre novamente na sessão e abra o
-atalho. Para atualizar código já carregado, reabra o GNOME de teste ou entre
-novamente na sessão principal; o instalador não encerra sua sessão.
+</details>
 
-## Preparar e compilar
+## 🖱️ Usar
 
-Requer GNOME Shell 50, Node.js 24 ou superior, npm, `ps` (procps) e
-`glib-compile-schemas` (libglib2.0-bin no Ubuntu).
-
-```sh
-npm ci
-npm run build
-```
-
-O build compila `src/` para `build/`, gera os pontos de entrada `extension.js` e
-`prefs.js` na raiz e compila o schema GSettings. O link da instalação para a raiz
-do projeto continua válido. Não edite os arquivos gerados.
-
-Para recompilar TypeScript enquanto desenvolve:
-
-```sh
-npm run watch
-```
-
-O watch recompila o código, mas o GNOME ainda precisa recarregar a extensão em
-uma nova sessão de teste. Depois de alterar o XML do schema, execute o build
-completo novamente. Preferências alteradas pela interface não precisam de build
-nem reinício.
-
-O Monitor do Sistema é opcional. Neste computador, sua instalação depende de
-uma confirmação administrativa no terminal:
-
-```sh
-sudo apt install gnome-system-monitor
-```
-
-Sem esse aplicativo, o botão informa como instalá-lo.
-
-## Organização e tipagem
-
-| Arquivo ou pasta | Responsabilidade |
+| No menu do widget | O que acontece |
 | --- | --- |
-| `src/extension.ts` | Entrada do GNOME; cria e descarta o controlador |
-| `src/controller.ts` | Ciclo de vida, temporizador e atualização da interface |
-| `src/data/` | DTOs em classes separadas, com propriedades readonly, para dados entre camadas |
-| `src/domain/` | Parsers, cálculos, ranking e tipos de seleção; sem dependência do GNOME |
-| `src/presenters/` | Formatação e tradução das métricas para os DTOs de apresentação |
-| `src/services/` | Amostragem de CPU/memória e consulta assíncrona de processos |
-| `src/platform/` | Leitura de arquivos e integração com o Monitor do Sistema |
-| `src/ui/` | Indicador, linhas de processos e tela de preferências |
-| `src/settings.ts` | Chaves e leitura tipada das configurações |
-| `src/prefs.ts` | Entrada da janela de preferências |
-| `schemas/` | Definição e limites das preferências persistidas |
-| `scripts/build.ts` | Build em TypeScript |
-| `install.ts` e `scripts/installer/` | Instalador, opções, verificações e atualização com backup |
-| `assets/system-pulse.png` | Mascote distribuído com o instalador |
-| `tests/` | Testes em TypeScript dos cálculos e casos de borda |
+| **Ordenar por** | Alterna o ranking entre **RAM (RSS)** e **CPU (atividade recente)**. |
+| **Preferências…** | Escolhe o conteúdo da barra, o intervalo e a quantidade de processos — salvo e aplicado na hora. |
+| **Abrir Monitor do Sistema** | Inicia o aplicativo do GNOME ou explica como instalá-lo. |
+| **Remover da barra** | Desativa a extensão e interrompe as atualizações; arquivos e preferências permanecem. |
 
-Todo o código-fonte próprio, incluindo instalador, build e testes, está em TypeScript.
-`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` e
-`noImplicitOverride` estão habilitados, sem `any`, supressões de erro ou
-asserções de não nulidade no código próprio. As APIs externas usam `@girs`
-para GNOME Shell 50. `skipLibCheck` evita checar internamente as declarações
-dessas dependências; o uso delas pelo projeto continua sendo verificado.
-Tipagem não substitui a validação em execução dos dados de `/proc`.
+### Adicionar de volta à barra
 
-As funções livres usam arrow functions, estruturas de controle têm chaves e o fluxo
-usa retornos antecipados. Imports do GNOME Shell são diretos; os módulos `gi://`
-mantêm o import padrão exigido pelo GJS. Os serviços coletam dados e o presenter
-produz os textos. A interface usa gettext com o domínio `system-pulse`; sem catálogo
-instalado, as mensagens originais em português continuam sendo exibidas.
+Pressione <kbd>Super</kbd>, pesquise **System Pulse** e abra
+**System Pulse — Adicionar à barra**. Você também pode fixar esse atalho nos
+favoritos ou ativar o widget pelo aplicativo **Extensões**. Pelo terminal da sessão:
 
-As dependências npm são usadas somente no desenvolvimento. O GNOME executa o
-JavaScript compilado usando GJS; Node.js e `node_modules` não participam da execução
-do widget. GTK/Adwaita são carregados apenas no processo de preferências.
+```sh
+gnome-extensions enable ram-widget@local    # ativar
+gnome-extensions disable ram-widget@local   # desativar
+gnome-extensions info ram-widget@local      # conferir o estado
+```
 
-## Como interpretar os valores
+Reativar uma versão já carregada não exige sair da sessão. O widget permanece
+desativado até você reativá-lo, inclusive após sair e entrar no GNOME.
 
-CPU total é a média de todas as CPUs lógicas, de 0 a 100%, calculada pela diferença
-entre duas leituras de `/proc/stat`. Tempo ocioso e espera de I/O ficam fora do uso.
-`guest` e `guest_nice` já estão incluídos nos demais contadores e não são somados
-novamente. Na primeira leitura aparece `…`.
+## 📊 Métricas
+
+| Métrica | Como interpretar |
+| --- | --- |
+| **CPU total** | Média de todas as CPUs lógicas, de 0 a 100%, entre duas leituras de `/proc/stat`. Tempo ocioso e espera de I/O ficam fora do uso. |
+| **CPU por processo** | Atividade recente, normalizada pela capacidade total. Com 8 CPUs lógicas, uma CPU totalmente ocupada equivale a ~12,5%. |
+| **RAM usada** | `MemTotal − MemAvailable`. O total utilizável pode ser menor que a RAM instalada por causa de reservas do hardware e do sistema. |
+| **Swap usada** | `SwapTotal − SwapFree`. Sem swap, o menu informa isso. |
+| **RAM por processo (RSS)** | Inclui páginas compartilhadas — somar os processos não dá o consumo total de RAM. |
+
+O símbolo **`…`** indica que ainda falta uma segunda amostra válida para calcular
+CPU. A lista considera processos com RSS maior que zero e mostra cada PID
+individualmente, mesmo quando vários pertencem ao mesmo aplicativo.
+
+<details>
+<summary><b>🔬 Amostragem, processos e casos de borda</b></summary>
+
+<br>
 
 A CPU de cada processo usa a diferença de `utime + stime` em `/proc/PID/stat`,
-dividida pelo avanço dos contadores totais. **100% representa a capacidade total
-do computador**: em 8 CPUs lógicas, uma CPU completamente ocupada representa
-aproximadamente 12,5%. Isso pode diferir de ferramentas que mostram 100% por CPU.
-A leitura é feita no intervalo recente, e não pela média desde a criação do processo.
-Reuso de PID, mudança na quantidade de CPUs e regressão de contadores reiniciam a
-amostragem. Processos sem duas amostras válidas mostram `…` e ficam no final do ranking
-por CPU. A lista considera processos com RSS maior que zero.
+dividida pelo avanço dos contadores totais. O percentual representa o intervalo
+recente, e não a média desde a criação do processo. Na CPU total, `guest` e
+`guest_nice` já estão incluídos nos outros contadores e não são somados novamente.
 
-A RAM usada é `MemTotal - MemAvailable`. O total utilizável exclui reservas de
-hardware e do sistema e pode ser menor que a RAM instalada. A swap usada é
-`SwapTotal - SwapFree`; se não houver swap, o menu informa isso.
+Reuso de PID, mudança na quantidade de CPUs e regressão de contadores reiniciam
+a amostragem. Processos sem duas amostras válidas ficam no final do ranking por CPU.
 
-RSS inclui páginas compartilhadas: somar as linhas não corresponde ao consumo
-total de RAM. Cada PID aparece individualmente, mesmo quando vários processos
-pertencem ao mesmo aplicativo.
+Os processos são consultados somente com o menu aberto. Cada abertura inicia uma
+nova amostragem; a porcentagem aparece após o próximo intervalo. A leitura é
+assíncrona, com concorrência limitada. Fechar o menu ou desativar a extensão
+cancela as consultas pendentes. Desativar também remove o temporizador e os sinais
+de preferências.
 
-Processos são consultados somente com o menu aberto. A abertura inicia uma nova
-amostragem de CPU; a porcentagem aparece após o próximo intervalo. A leitura é
-assíncrona, com concorrência limitada; fechar o menu ou desativar a extensão cancela
-consultas pendentes. Desativar também remove o temporizador e os sinais de preferências.
+</details>
 
-## Verificar
+## 🛠️ Desenvolver
 
 ```sh
-npm run typecheck  # código da extensão, preferências, build e testes
-npm test           # domínio, DTOs, interface, serviços e instalador
-npm run coverage   # exige 100% de linhas, branches e funções no código executado
-npm run check      # tipagem, cobertura obrigatória e build completo
+node install.ts --dev   # conecta a instalação a este checkout
+npm ci                  # instala as dependências
+npm run build           # compila src/ → build/, gera extension.js, prefs.js e o schema
+npm run watch           # recompila o TypeScript a cada alteração
 ```
 
-Os testes cobrem CPU ociosa/ocupada, I/O, guest, hotplug, regressão de contadores,
-memória inconsistente, swap, nomes de processos com parênteses, reuso de PID,
-ranking e modos da barra. Os testes do instalador cobrem cópia, atualização com backup,
-link de desenvolvimento, caminhos com espaços, rollback, falha na restauração e opções inválidas.
-A cobertura usa o V8 do Node.js, incluindo `src/`, `scripts/` e `install.ts`,
-sem exclusões por comentários. Os arquivos que contêm apenas tipos não têm código de execução.
+Edite apenas os arquivos de origem; os gerados são recriados no próximo build.
+Depois de alterar o XML do schema, execute o build completo novamente.
+Preferências alteradas pela interface não precisam de build nem reinício.
 
-Os testes de controlador, serviços, menus e preferências usam simuladores tipados das
-APIs do GNOME em `tests/support/`; não abrem janelas nem alteram a sessão real.
-As operações de arquivos do instalador usam diretórios temporários reais; comandos
-externos são simulados. A verificação visual em GNOME 50 continua sendo feita no
-ambiente de teste descrito abaixo.
+### GNOME de teste em uma janela
 
-## Experimentar
+Em Wayland, o JavaScript de uma extensão já carregada só é atualizado numa nova
+sessão do GNOME — desativar e reativar não basta. O ambiente em janela permite
+reiniciar apenas a sessão de teste, sem fechar o seu desktop.
 
-Com `node install.ts --dev`, `~/.local/share/gnome-shell/extensions/ram-widget@local`
-é um link para a pasta deste projeto. Na instalação normal, é uma cópia independente.
-
-```sh
-gnome-extensions enable ram-widget@local
-gnome-extensions info ram-widget@local
-```
-
-Se a extensão ainda não for reconhecida, salve seu trabalho, encerre a sessão
-do GNOME e entre novamente. Depois, execute o comando de ativação.
-Em Wayland, alterações no JavaScript de uma extensão já carregada na barra
-principal precisam de uma nova sessão para que o GNOME leia o código atualizado.
-Desativar e reativar a extensão não recarrega esse código. Para desenvolver
-sem encerrar a sessão principal, use o ambiente em janela descrito abaixo.
-
-## Remover e adicionar novamente
-
-Abra o menu do widget e clique em **Remover da barra**. Isso desativa a extensão,
-interrompe as atualizações e mantém os arquivos instalados.
-
-Para adicionar novamente, pressione **Super**, pesquise **System Pulse** e abra
-**System Pulse — Adicionar à barra**. O atalho está instalado neste computador
-com o ícone do mascote. Você também pode fixá-lo nos favoritos do GNOME.
-
-O arquivo do atalho é `system-pulse-enable.desktop`; sua cópia instalada fica
-em `~/.local/share/applications/ram-widget-enable.desktop`. Ele apenas ativa
-a extensão e pode ser usado mesmo se ela já estiver habilitada.
-
-Outra opção é abrir o aplicativo **Extensões** do GNOME e ativar **System Pulse**,
-ou executar no terminal da sessão em que deseja exibi-lo:
-
-```sh
-gnome-extensions enable ram-widget@local
-```
-
-Reativar uma versão já carregada não exige sair da sessão. Se estiver usando
-o GNOME de teste, execute o comando dentro dele. O widget permanece desativado
-até você reativá-lo, inclusive após sair e entrar na sessão.
-
-Também é possível removê-lo da barra pelo terminal:
-
-```sh
-gnome-extensions disable ram-widget@local
-```
-
-## Desenvolver sem encerrar a sessão principal
-
-No GNOME 50 com Wayland, é possível abrir um GNOME de teste dentro de uma
-janela. A cada alteração no código, reinicie apenas esse ambiente de teste.
-
-1. Instale o suporte de desenvolvimento no Ubuntu (apenas uma vez):
+1. Instale o suporte de desenvolvimento no Ubuntu, uma única vez:
 
    ```sh
    sudo apt install mutter-dev-bin
@@ -261,21 +236,104 @@ janela. A cada alteração no código, reinicie apenas esse ambiente de teste.
    dbus-run-session gnome-shell --devkit --wayland
    ```
 
-3. Dentro da janela do GNOME de teste, abra um terminal e ative a extensão:
+3. Dentro da janela de teste, abra um terminal e habilite a extensão:
 
    ```sh
    gnome-extensions enable ram-widget@local
-   gnome-extensions info ram-widget@local
    ```
 
-4. Edite os arquivos em `src/` e execute `npm run build`. Feche a janela do GNOME de teste e
-   repita o passo 2 para carregar a nova versão. Se necessário, ative a
-   extensão novamente dentro dela.
+4. Edite `src/`, rode `npm run build`, feche a janela de teste e repita o passo 2.
 
-O desktop principal continua aberto. As mensagens de diagnóstico do GNOME
-de teste aparecem no terminal usado para iniciá-lo. Essa janela usa os
-arquivos do mesmo usuário; não é uma máquina virtual isolada.
+Os diagnósticos aparecem no terminal que iniciou o GNOME de teste, e essa sessão
+usa os arquivos do mesmo usuário.
 
-Referências: [primeira extensão](https://gjs.guide/extensions/development/creating.html),
-[menus](https://gjs.guide/extensions/topics/popup-menu.html)
-e [recarregamento e depuração](https://gjs.guide/extensions/development/debugging.html#reloading-extensions).
+<details>
+<summary><b>🗂️ Organização do código</b></summary>
+
+<br>
+
+| Caminho | Responsabilidade |
+| --- | --- |
+| [`src/extension.ts`](src/extension.ts) · [`src/controller.ts`](src/controller.ts) | Entrada da extensão, ciclo de vida, temporizador e atualização da interface. |
+| [`src/data/`](src/data/) | DTOs em classes separadas, com propriedades `readonly`. |
+| [`src/domain/`](src/domain/) | Parsers, cálculos, ranking e tipos de seleção, sem dependência do GNOME. |
+| [`src/services/`](src/services/) | Amostragem de CPU/memória e consulta assíncrona de processos. |
+| [`src/platform/`](src/platform/) | Leitura de arquivos e integração com o Monitor do Sistema. |
+| [`src/presenters/`](src/presenters/) | Formatação das métricas nos DTOs de apresentação. |
+| [`src/ui/`](src/ui/) | Indicador, linhas de processos e tela de preferências. |
+| [`src/settings.ts`](src/settings.ts) · [`src/prefs.ts`](src/prefs.ts) · [`schemas/`](schemas/) | Configurações tipadas, entrada das preferências e schema GSettings. |
+| [`scripts/`](scripts/) · [`install.ts`](install.ts) | Build, instalador e atualização com backup. |
+| [`tests/`](tests/) | Testes de domínio, DTOs, serviços, interface e instalação. |
+
+</details>
+
+<details>
+<summary><b>🧭 TypeScript, APIs nativas e tradução</b></summary>
+
+<br>
+
+Todo o código-fonte próprio — instalador, build e testes incluídos — está em
+TypeScript, com `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`
+e `noImplicitOverride`, sem `any`, supressões de erro ou asserções de não nulidade.
+
+As APIs externas usam `@girs` para GNOME Shell 50. `skipLibCheck` evita checar
+internamente essas declarações, mas o uso delas pelo projeto continua verificado.
+Os dados de `/proc` também são validados em execução.
+
+As funções livres usam arrow functions, os controles de fluxo têm chaves e o
+código usa retornos antecipados. Os imports do GNOME Shell são diretos; os módulos
+`gi://` mantêm o import padrão exigido pelo GJS. GTK/Adwaita são carregados apenas
+no processo de preferências.
+
+A interface usa gettext com o domínio `system-pulse`. Sem catálogo instalado,
+as mensagens originais em português continuam sendo exibidas.
+
+</details>
+
+## ✅ Verificar
+
+```sh
+npm run check
+```
+
+Verifica os tipos, exige **100% de cobertura de linhas, branches e funções** e
+conclui com o build completo.
+
+| Comando | Verificação |
+| --- | --- |
+| `npm run typecheck` | Tipagem da extensão, preferências, ferramentas e testes. |
+| `npm test` | Testes de domínio, DTOs, interface, serviços e instalador. |
+| `npm run coverage` | Testes com os limites obrigatórios de cobertura. |
+| `npm run check` | Tipagem, cobertura e build. |
+
+A cobertura usa o V8 do Node.js e inclui `src/`, `scripts/` e `install.ts`, sem
+exclusões por comentários. Os testes cobrem contadores de CPU, memória
+inconsistente, swap, reuso de PID, ranking, preferências, cancelamento de
+consultas, instalação, backup e restauração. As APIs do GNOME e os comandos
+externos são simulados; os testes de arquivos do instalador usam diretórios
+temporários reais. A verificação visual é feita no GNOME de teste.
+
+<details>
+<summary><b>🏷️ Compatibilidade com o antigo RAM Widget</b></summary>
+
+<br>
+
+O projeto passou a se chamar **System Pulse**. O UUID `ram-widget@local`, o schema
+e o caminho GSettings e o identificador do atalho instalado foram mantidos para
+preservar preferências, ativação e favoritos. A instalação funciona
+independentemente do nome da pasta do checkout.
+
+</details>
+
+---
+
+<div align="center">
+  <img src="assets/system-pulse.png" alt="Mascote do System Pulse: um pente de memória sorridente segurando um medidor" width="96" height="96">
+  <br>
+  <sub>
+    Feito com 💚 para o GNOME ·
+    <a href="https://gjs.guide/extensions/development/creating.html">Criar uma extensão</a> ·
+    <a href="https://gjs.guide/extensions/topics/popup-menu.html">Menus</a> ·
+    <a href="https://gjs.guide/extensions/development/debugging.html#reloading-extensions">Depuração</a>
+  </sub>
+</div>

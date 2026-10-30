@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" fill="none" role="img" aria-labelledby="title description">
+  <title id="title">System Pulse preview</title>
+  <desc id="description">The GNOME top bar shows CPU 12% and RAM 41%. Below it, the widget menu (in Portuguese) shows CPU, RAM and swap, the five processes using the most RAM, and the actions to open System Monitor, open Preferences and remove the widget from the bar.</desc>
+  <defs>
+    <linearGradient id="wallpaper" x1="0" y1="0" x2="1200" y2="700" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1B2B4B"/>
+      <stop offset=".5" stop-color="#253A63"/>
+      <stop offset="1" stop-color="#3A2F5C"/>
+    </linearGradient>
+    <radialGradient id="light" cx="0" cy="0" r="1" gradientTransform="matrix(0 420 -620 0 260 620)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#54E1C1" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#54E1C1" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".45"/>
+    </filter>
+    <clipPath id="frame">
+      <rect width="1200" height="700" rx="24"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#frame)" font-family="'Cantarell', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif">
+    <rect width="1200" height="700" fill="url(#wallpaper)"/>
+    <rect width="1200" height="700" fill="url(#light)"/>
+
+    <!-- Barra superior -->
+    <rect width="1200" height="38" fill="#000000"/>
+    <rect x="14" y="8" width="64" height="22" rx="11" fill="#FFFFFF" fill-opacity=".14"/>
+    <circle cx="34" cy="19" r="4" fill="#FFFFFF"/>
+    <circle cx="48" cy="19" r="3" fill="#FFFFFF" fill-opacity=".55"/>
+    <circle cx="60" cy="19" r="3" fill="#FFFFFF" fill-opacity=".55"/>
+    <text x="600" y="24.5" text-anchor="middle" fill="#FFFFFF" font-size="14.5" font-weight="700">Oct 30  14:32</text>
+
+    <rect x="842" y="5" width="168" height="28" rx="14" fill="#FFFFFF" fill-opacity=".2"/>
+    <text x="926" y="24" text-anchor="middle" fill="#FFFFFF" font-size="14.5" font-weight="700">CPU 12% · RAM 41%</text>
+
+    <g fill="#FFFFFF">
+      <path d="M1058 24a12 12 0 0 1 16-0" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M1062 27.5a6.5 6.5 0 0 1 8 0" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M1094 15h4l5-4v16l-5-4h-4z"/>
+      <rect x="1126" y="13" width="22" height="12" rx="3" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+      <rect x="1129" y="16" width="13" height="6" rx="1"/>
+      <rect x="1149" y="16.5" width="2.5" height="5" rx="1"/>
+    </g>
+
+    <!-- Menu -->
+    <g transform="translate(676 50)" filter="url(#shadow)">
+      <rect width="500" height="618" rx="18" fill="#2A2A2E" stroke="#FFFFFF" stroke-opacity=".08"/>
+    </g>
+    <g transform="translate(676 50)" fill="#FFFFFF">
+      <text x="28" y="40" font-size="15" fill-opacity=".92">CPU: 12% em uso · média de 8 CPUs lógicas</text>
+      <text x="28" y="76" font-size="15" fill-opacity=".92">RAM: 6.4 GiB usados de 15.5 GiB utilizáveis</text>
+      <text x="28" y="112" font-size="15" fill-opacity=".92">Swap: 0.3 GiB usados de 4.0 GiB</text>
+
+      <text x="28" y="150" font-size="12.5" font-weight="700" fill-opacity=".5" letter-spacing=".4">Processos</text>
+      <rect x="104" y="145" width="372" height="1" fill-opacity=".12"/>
+
+      <rect x="12" y="162" width="476" height="38" rx="10" fill-opacity=".07"/>
+      <text x="28" y="186" font-size="15">Ordenar por RAM</text>
+      <path d="M466 176l6 5-6 5" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+      <g font-size="14.5">
+        <g font-weight="700">
+          <text x="28" y="230">Processo</text>
+          <text x="356" y="230" text-anchor="end">PID</text>
+          <text x="472" y="230" text-anchor="end">RAM</text>
+        </g>
+        <g fill-opacity=".9" font-variant-numeric="tabular-nums">
+          <text x="28" y="266">firefox</text>
+          <text x="356" y="266" text-anchor="end" fill-opacity=".6">4127</text>
+          <text x="472" y="266" text-anchor="end">1243.7 MiB</text>
+
+          <text x="28" y="300">gnome-shell</text>
+          <text x="356" y="300" text-anchor="end" fill-opacity=".6">1986</text>
+          <text x="472" y="300" text-anchor="end">612.4 MiB</text>
+
+          <text x="28" y="334">code</text>
+          <text x="356" y="334" text-anchor="end" fill-opacity=".6">5120</text>
+          <text x="472" y="334" text-anchor="end">540.2 MiB</text>
+
+          <text x="28" y="368">Isolated Web Co</text>
+          <text x="356" y="368" text-anchor="end" fill-opacity=".6">4388</text>
+          <text x="472" y="368" text-anchor="end">318.9 MiB</text>
+
+          <text x="28" y="402">nautilus</text>
+          <text x="356" y="402" text-anchor="end" fill-opacity=".6">3045</text>
+          <text x="472" y="402" text-anchor="end">187.5 MiB</text>
+        </g>
+      </g>
+
+      <text x="28" y="446" font-size="12.5" fill="#AAAAAA">RSS inclui páginas compartilhadas.</text>
+
+      <rect x="28" y="468" width="444" height="1" fill-opacity=".12"/>
+
+      <g font-size="15">
+        <text x="28" y="506">Abrir Monitor do Sistema</text>
+        <text x="28" y="548">Preferências…</text>
+        <text x="28" y="590">Remover da barra</text>
+      </g>
+    </g>
+
+    <!-- Destaques -->
+    <g font-size="15" fill="#E6EEF8">
+      <g transform="translate(64 140)">
+        <rect width="520" height="112" rx="18" fill="#0D1628" fill-opacity=".55" stroke="#FFFFFF" stroke-opacity=".08"/>
+        <circle cx="44" cy="56" r="20" fill="#54E1C1" fill-opacity=".16"/>
+        <path d="M33 57h6l4-9 6 18 4-9h7" stroke="#7AF0D3" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="84" y="48" font-size="19" font-weight="700" fill="#FFFFFF">At a glance</text>
+        <text x="84" y="76" fill-opacity=".75">CPU, RAM or both, right on the top bar.</text>
+      </g>
+      <g transform="translate(64 276)">
+        <rect width="520" height="112" rx="18" fill="#0D1628" fill-opacity=".55" stroke="#FFFFFF" stroke-opacity=".08"/>
+        <circle cx="44" cy="56" r="20" fill="#81B9FF" fill-opacity=".18"/>
+        <g stroke="#9CC8FF" stroke-width="2.6" stroke-linecap="round">
+          <path d="M34 48h20M34 56h14M34 64h8"/>
+        </g>
+        <text x="84" y="48" font-size="19" font-weight="700" fill="#FFFFFF">In detail</text>
+        <text x="84" y="76" fill-opacity=".75">Processes ranked by RAM or by CPU.</text>
+      </g>
+      <g transform="translate(64 412)">
+        <rect width="520" height="112" rx="18" fill="#0D1628" fill-opacity=".55" stroke="#FFFFFF" stroke-opacity=".08"/>
+        <circle cx="44" cy="56" r="20" fill="#C9A8FF" fill-opacity=".18"/>
+        <circle cx="44" cy="56" r="6" stroke="#D7BFFF" stroke-width="2.6"/>
+        <path d="M44 42v4M44 66v4M30 56h4M54 56h4" stroke="#D7BFFF" stroke-width="2.6" stroke-linecap="round"/>
+        <text x="84" y="48" font-size="19" font-weight="700" fill="#FFFFFF">Your way</text>
+        <text x="84" y="76" fill-opacity=".75">Refresh every 1–60 s, show 1–20 processes.</text>
+      </g>
+    </g>
+  </g>
+</svg>
