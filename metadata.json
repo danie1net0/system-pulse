@@ -1,0 +1,11 @@
+{
+  "uuid": "ram-widget@local",
+  "name": "System Pulse",
+  "description": "Monitora CPU, RAM e swap com ranking de processos e preferências.",
+  "shell-version": [
+    "50"
+  ],
+  "version": 1,
+  "settings-schema": "org.gnome.shell.extensions.ram-widget",
+  "gettext-domain": "system-pulse"
+}

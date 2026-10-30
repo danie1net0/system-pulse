@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=System Pulse — Adicionar à barra
+Comment=Ativa o monitor de CPU, RAM e swap na barra superior do GNOME
+Exec=gnome-extensions enable ram-widget@local
+Icon=system-pulse
+Terminal=false
+StartupNotify=false
+Categories=System;Monitor;
+Keywords=RAM;CPU;swap;memória;monitor;widget;

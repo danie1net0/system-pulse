@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.ram-widget" path="/org/gnome/shell/extensions/ram-widget/">
+    <key name="update-interval" type="i">
+      <default>2</default><range min="1" max="60"/>
+      <summary>Intervalo de atualização em segundos</summary>
+    </key>
+    <key name="process-count" type="i">
+      <default>5</default><range min="1" max="20"/>
+      <summary>Quantidade de processos no menu</summary>
+    </key>
+    <key name="process-metric" type="s">
+      <default>'ram'</default><choices><choice value="ram"/><choice value="cpu"/></choices>
+      <summary>Ordenação dos processos</summary>
+    </key>
+    <key name="panel-mode" type="s">
+      <default>'both'</default><choices><choice value="both"/><choice value="cpu"/><choice value="ram"/></choices>
+      <summary>Métricas exibidas na barra superior</summary>
+    </key>
+  </schema>
+</schemalist>

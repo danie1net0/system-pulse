@@ -1,0 +1,31 @@
+.system-pulse-process-name {
+    width: 16em;
+}
+
+.system-pulse-process-pid {
+    width: 6em;
+    text-align: right;
+}
+
+.system-pulse-process-memory {
+    width: 8em;
+    text-align: right;
+    font-feature-settings: "tnum";
+}
+
+.system-pulse-process-header {
+    font-weight: bold;
+}
+
+.system-pulse-hint {
+    font-size: 0.85em;
+    color: #aaaaaa;
+}
+
+.system-pulse-process-scroll {
+    max-height: 20em;
+}
+
+.system-pulse-process-area {
+    padding: 0;
+}

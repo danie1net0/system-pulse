@@ -1,0 +1,6 @@
+node_modules/
+.idea/
+build/
+extension.js
+prefs.js
+schemas/gschemas.compiled
