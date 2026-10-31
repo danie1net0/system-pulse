@@ -8,7 +8,8 @@ export const fixture = (): {root: string; source: string; dataHome: string; clea
     const source = join(root, 'projeto com espaços');
     const dataHome = join(root, 'dados com espaços');
     const files = ['extension.js', 'prefs.js', 'stylesheet.css', 'build/extension.js', 'build/prefs.js',
-        'schemas/gschemas.compiled', 'schemas/org.gnome.shell.extensions.ram-widget.gschema.xml', 'assets/system-pulse.png'];
+        'schemas/gschemas.compiled', 'schemas/org.gnome.shell.extensions.system-pulse.gschema.xml',
+        'locale/en/LC_MESSAGES/system-pulse.mo', 'assets/system-pulse.png'];
     for (const file of files) {
         mkdirSync(dirname(join(source, file)), {recursive: true});
         writeFileSync(join(source, file), `fixture: ${file}`);

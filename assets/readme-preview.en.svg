@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" fill="none" role="img" aria-labelledby="title description">
   <title id="title">System Pulse preview</title>
-  <desc id="description">The GNOME top bar shows CPU 12% and RAM 41%. Below it, the widget menu (in Portuguese) shows CPU, RAM and swap, the five processes using the most RAM, and the actions to open System Monitor, open Preferences and remove the widget from the bar.</desc>
+  <desc id="description">The GNOME top bar shows CPU 12% and RAM 41%. Below it, the widget menu shows CPU, RAM and swap, the five processes using the most RAM, and the actions to open System Monitor, open Preferences and remove the widget from the bar.</desc>
   <defs>
     <linearGradient id="wallpaper" x1="0" y1="0" x2="1200" y2="700" gradientUnits="userSpaceOnUse">
       <stop stop-color="#1B2B4B"/>
@@ -48,20 +48,20 @@
       <rect width="500" height="618" rx="18" fill="#2A2A2E" stroke="#FFFFFF" stroke-opacity=".08"/>
     </g>
     <g transform="translate(676 50)" fill="#FFFFFF">
-      <text x="28" y="40" font-size="15" fill-opacity=".92">CPU: 12% em uso · média de 8 CPUs lógicas</text>
-      <text x="28" y="76" font-size="15" fill-opacity=".92">RAM: 6.4 GiB usados de 15.5 GiB utilizáveis</text>
-      <text x="28" y="112" font-size="15" fill-opacity=".92">Swap: 0.3 GiB usados de 4.0 GiB</text>
+      <text x="28" y="40" font-size="15" fill-opacity=".92">CPU: 12% in use · average of 8 logical CPUs</text>
+      <text x="28" y="76" font-size="15" fill-opacity=".92">RAM: 6.4 GiB used of 15.5 GiB usable</text>
+      <text x="28" y="112" font-size="15" fill-opacity=".92">Swap: 0.3 GiB used of 4.0 GiB</text>
 
-      <text x="28" y="150" font-size="12.5" font-weight="700" fill-opacity=".5" letter-spacing=".4">Processos</text>
+      <text x="28" y="150" font-size="12.5" font-weight="700" fill-opacity=".5" letter-spacing=".4">Processes</text>
       <rect x="104" y="145" width="372" height="1" fill-opacity=".12"/>
 
       <rect x="12" y="162" width="476" height="38" rx="10" fill-opacity=".07"/>
-      <text x="28" y="186" font-size="15">Ordenar por RAM</text>
+      <text x="28" y="186" font-size="15">Sort by RAM</text>
       <path d="M466 176l6 5-6 5" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 
       <g font-size="14.5">
         <g font-weight="700">
-          <text x="28" y="230">Processo</text>
+          <text x="28" y="230">Process</text>
           <text x="356" y="230" text-anchor="end">PID</text>
           <text x="472" y="230" text-anchor="end">RAM</text>
         </g>
@@ -88,14 +88,14 @@
         </g>
       </g>
 
-      <text x="28" y="446" font-size="12.5" fill="#AAAAAA">RSS inclui páginas compartilhadas.</text>
+      <text x="28" y="446" font-size="12.5" fill="#AAAAAA">RSS includes shared pages.</text>
 
       <rect x="28" y="468" width="444" height="1" fill-opacity=".12"/>
 
       <g font-size="15">
-        <text x="28" y="506">Abrir Monitor do Sistema</text>
-        <text x="28" y="548">Preferências…</text>
-        <text x="28" y="590">Remover da barra</text>
+        <text x="28" y="506">Open System Monitor</text>
+        <text x="28" y="548">Preferences…</text>
+        <text x="28" y="590">Remove from bar</text>
       </g>
     </g>
 

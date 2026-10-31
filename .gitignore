@@ -4,3 +4,5 @@ build/
 extension.js
 prefs.js
 schemas/gschemas.compiled
+locale/
+dist/

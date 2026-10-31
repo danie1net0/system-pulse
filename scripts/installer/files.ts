@@ -4,8 +4,7 @@ import {dirname, join, relative, sep} from 'node:path';
 import type {InstallFilesOptions} from './data/install-files-options.ts';
 import {InstallResult} from './data/install-result.ts';
 
-// Identidade estável: a mudança de nome não cria outra extensão no GNOME.
-export const UUID = 'ram-widget@local';
+export const UUID = 'system-pulse@danie1net0.gitlab.io';
 
 interface Change {
     readonly target: string;
@@ -67,7 +66,9 @@ const stageExtension = (options: InstallFilesOptions, source: string, destinatio
         cpSync(join(source, file), target);
     }
 
-    cpSync(join(source, 'build'), join(destination, 'build'), {recursive: true});
+    for (const directory of ['build', 'locale']) {
+        cpSync(join(source, directory), join(destination, directory), {recursive: true});
+    }
 };
 
 export const installFiles = (options: InstallFilesOptions): InstallResult => {
@@ -84,15 +85,15 @@ export const installFiles = (options: InstallFilesOptions): InstallResult => {
     }
 
     const runtimeFiles = ['extension.js', 'prefs.js', 'metadata.json', 'stylesheet.css',
-        'schemas/gschemas.compiled', 'schemas/org.gnome.shell.extensions.ram-widget.gschema.xml'];
-    for (const file of [...runtimeFiles, 'build/extension.js', 'build/prefs.js', 'assets/system-pulse.png']) {
+        'schemas/gschemas.compiled', 'schemas/org.gnome.shell.extensions.system-pulse.gschema.xml'];
+    for (const file of [...runtimeFiles, 'build/extension.js', 'build/prefs.js',
+        'locale/en/LC_MESSAGES/system-pulse.mo', 'assets/system-pulse.png']) {
         if (!statSync(join(source, file), {throwIfNoEntry: false})?.isFile()) {
             throw new Error(`Arquivo ausente: ${file}. Execute npm run build antes de instalar.`);
         }
     }
 
-    // Preserva o ID do atalho para manter os favoritos já configurados.
-    const launcher = join(dataHome, 'applications/ram-widget-enable.desktop');
+    const launcher = join(dataHome, 'applications/system-pulse-enable.desktop');
     const icon = join(dataHome, 'icons/hicolor/512x512/apps/system-pulse.png');
 
     for (const file of [launcher, icon]) {

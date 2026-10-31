@@ -26,7 +26,7 @@ test('destino alternativo instala cópia e prepara build sem ativar extensão', 
     context.mock.method(console, 'log', () => undefined);
     setup(['--dest-dir', installation.dataHome], installation.source);
 
-    assert.ok(existsSync(join(installation.dataHome, 'gnome-shell/extensions/ram-widget@local/extension.js')));
+    assert.ok(existsSync(join(installation.dataHome, 'gnome-shell/extensions/system-pulse@danie1net0.gitlab.io/extension.js')));
     assert.deepEqual(environment.calls.filter(call => call.command === 'npm').map(call => call.arguments),
         [['ci', '--ignore-scripts', '--no-audit', '--no-fund'], ['run', 'build']]);
     assert.equal(environment.calls.some(call => call.command === 'gnome-extensions'), false);

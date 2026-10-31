@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema id="org.gnome.shell.extensions.ram-widget" path="/org/gnome/shell/extensions/ram-widget/">
+  <schema id="org.gnome.shell.extensions.system-pulse" path="/org/gnome/shell/extensions/system-pulse/">
     <key name="update-interval" type="i">
       <default>2</default><range min="1" max="60"/>
       <summary>Intervalo de atualização em segundos</summary>

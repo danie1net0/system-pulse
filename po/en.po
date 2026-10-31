@@ -1,0 +1,117 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: system-pulse\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/platform/system-monitor.ts
+msgid "Instale o Monitor do Sistema: sudo apt install gnome-system-monitor"
+msgstr "Install System Monitor: sudo apt install gnome-system-monitor"
+
+msgid "Não foi possível abrir o Monitor do Sistema."
+msgstr "Could not open System Monitor."
+
+#: src/presenters/stats.ts
+msgid "CPU: leitura indisponível."
+msgstr "CPU: reading unavailable."
+
+msgid "CPU: calculando…"
+msgstr "CPU: calculating…"
+
+msgid "CPU: {percent}% em uso · média de {count} CPUs lógicas"
+msgstr "CPU: {percent}% in use · average of {count} logical CPUs"
+
+msgid "RAM: leitura indisponível."
+msgstr "RAM: reading unavailable."
+
+msgid "RAM: {used} usados de {total} utilizáveis"
+msgstr "RAM: {used} used of {total} usable"
+
+msgid "Swap: leitura indisponível."
+msgstr "Swap: reading unavailable."
+
+msgid "Swap: não configurada"
+msgstr "Swap: not configured"
+
+msgid "Swap: {used} usados de {total}"
+msgstr "Swap: {used} used of {total}"
+
+#: src/ui/indicator.ts
+msgid "CPU … · RAM …"
+msgstr "CPU … · RAM …"
+
+msgid "RAM: carregando…"
+msgstr "RAM: loading…"
+
+msgid "Swap: carregando…"
+msgstr "Swap: loading…"
+
+msgid "Ordenar por RAM"
+msgstr "Sort by RAM"
+
+msgid "Ordenar por CPU"
+msgstr "Sort by CPU"
+
+msgid "RAM (RSS)"
+msgstr "RAM (RSS)"
+
+msgid "CPU (atividade recente)"
+msgstr "CPU (recent activity)"
+
+msgid "Processos"
+msgstr "Processes"
+
+msgid "Abrir Monitor do Sistema"
+msgstr "Open System Monitor"
+
+msgid "Preferências…"
+msgstr "Preferences…"
+
+msgid "Remover da barra"
+msgstr "Remove from bar"
+
+msgid "RSS inclui páginas compartilhadas."
+msgstr "RSS includes shared pages."
+
+msgid "CPU: 100% = capacidade total · … = aguardando amostra"
+msgstr "CPU: 100% = total capacity · … = waiting for sample"
+
+msgid "Leitura indisponível"
+msgstr "Reading unavailable"
+
+#: src/ui/process-row.ts
+msgid "Processo"
+msgstr "Process"
+
+#: src/ui/preferences.ts
+msgid "Barra superior"
+msgstr "Top bar"
+
+msgid "As alterações são aplicadas imediatamente."
+msgstr "Changes are applied immediately."
+
+msgid "Exibir na barra"
+msgstr "Show on bar"
+
+msgid "CPU e RAM"
+msgstr "CPU and RAM"
+
+msgid "Somente CPU"
+msgstr "CPU only"
+
+msgid "Somente RAM"
+msgstr "RAM only"
+
+msgid "Intervalo de atualização (segundos)"
+msgstr "Refresh interval (seconds)"
+
+msgid "CPU é medida entre leituras: 100% representa a capacidade total do computador."
+msgstr "CPU is measured between readings: 100% is the computer’s total capacity."
+
+msgid "Ordenar por"
+msgstr "Sort by"
+
+msgid "Quantidade de processos"
+msgstr "Number of processes"

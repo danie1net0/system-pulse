@@ -277,7 +277,7 @@ export const GioUnix = {DesktopAppInfo: {new: (name: string): {launch: () => boo
 }}};
 export const gettext = (message: string): string => {state.translations.push(message); return message;};
 export class Extension {
-    readonly uuid = 'ram-widget@local';
+    readonly uuid = 'system-pulse@danie1net0.gitlab.io';
     readonly metadata = {name: 'System Pulse'};
     getSettings(): Settings | null {return state.settings;}
 

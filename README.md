@@ -11,6 +11,8 @@
   <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript em modo strict">
   <img src="https://img.shields.io/badge/Node.js-24+-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 24 ou superior">
   <img src="https://img.shields.io/badge/cobertura-100%25-54E1C1?style=for-the-badge" alt="Cobertura de testes de 100%">
+  <a href="https://gitlab.com/danie1net0/system-pulse/-/pipelines"><img src="https://img.shields.io/gitlab/pipeline-status/danie1net0%2Fsystem-pulse?branch=master&style=for-the-badge&logo=gitlab&label=pipeline" alt="Pipeline"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/licença-MIT-F2C94C?style=for-the-badge" alt="Licença MIT"></a>
 </p>
 
 **CPU, memória e os processos que mais consomem — direto na barra superior do GNOME.**<br>
@@ -81,10 +83,28 @@ Pronto. O instalador verifica o ambiente, instala as dependências npm, compila 
 projeto, copia os arquivos, instala o mascote, cria o atalho
 **System Pulse — Adicionar à barra** e tenta habilitar a extensão.
 
+<details>
+<summary><b>📦 Sem Node.js: instalar pelo pacote da release</b></summary>
+
+<br>
+
+Baixe `system-pulse@danie1net0.gitlab.io.shell-extension.zip` na
+[página de releases](https://gitlab.com/danie1net0/system-pulse/-/releases) e execute:
+
+```sh
+gnome-extensions install --force system-pulse@danie1net0.gitlab.io.shell-extension.zip
+```
+
+Depois, saia da sessão e entre novamente, e ative com
+`gnome-extensions enable system-pulse@danie1net0.gitlab.io`. Esse modo não cria o
+atalho com o mascote.
+
+</details>
+
 > [!NOTE]
 > **O widget não apareceu?** Se o GNOME ainda não reconhecer a extensão, salve seu
 > trabalho, saia da sessão e entre novamente. Depois, abra o atalho ou execute
-> `gnome-extensions enable ram-widget@local`.
+> `gnome-extensions enable system-pulse@danie1net0.gitlab.io`.
 
 ### Requisitos
 
@@ -131,8 +151,8 @@ A instalação usa `$XDG_DATA_HOME` quando ele é um caminho absoluto, ou
 
 | Item | Caminho relativo ao diretório de dados |
 | --- | --- |
-| Extensão | `gnome-shell/extensions/ram-widget@local/` |
-| Atalho | `applications/ram-widget-enable.desktop` |
+| Extensão | `gnome-shell/extensions/system-pulse@danie1net0.gitlab.io/` |
+| Atalho | `applications/system-pulse-enable.desktop` |
 | Mascote | `icons/hicolor/512x512/apps/system-pulse.png` |
 | Backups | `system-pulse/backups/` |
 
@@ -162,9 +182,9 @@ Pressione <kbd>Super</kbd>, pesquise **System Pulse** e abra
 favoritos ou ativar o widget pelo aplicativo **Extensões**. Pelo terminal da sessão:
 
 ```sh
-gnome-extensions enable ram-widget@local    # ativar
-gnome-extensions disable ram-widget@local   # desativar
-gnome-extensions info ram-widget@local      # conferir o estado
+gnome-extensions enable system-pulse@danie1net0.gitlab.io    # ativar
+gnome-extensions disable system-pulse@danie1net0.gitlab.io   # desativar
+gnome-extensions info system-pulse@danie1net0.gitlab.io      # conferir o estado
 ```
 
 Reativar uma versão já carregada não exige sair da sessão. O widget permanece
@@ -212,6 +232,7 @@ node install.ts --dev   # conecta a instalação a este checkout
 npm ci                  # instala as dependências
 npm run build           # compila src/ → build/, gera extension.js, prefs.js e o schema
 npm run watch           # recompila o TypeScript a cada alteração
+npm run pack            # gera dist/<uuid>.shell-extension.zip para a release
 ```
 
 Edite apenas os arquivos de origem; os gerados são recriados no próximo build.
@@ -239,7 +260,7 @@ reiniciar apenas a sessão de teste, sem fechar o seu desktop.
 3. Dentro da janela de teste, abra um terminal e habilite a extensão:
 
    ```sh
-   gnome-extensions enable ram-widget@local
+   gnome-extensions enable system-pulse@danie1net0.gitlab.io
    ```
 
 4. Edite `src/`, rode `npm run build`, feche a janela de teste e repita o passo 2.
@@ -262,7 +283,8 @@ usa os arquivos do mesmo usuário.
 | [`src/presenters/`](src/presenters/) | Formatação das métricas nos DTOs de apresentação. |
 | [`src/ui/`](src/ui/) | Indicador, linhas de processos e tela de preferências. |
 | [`src/settings.ts`](src/settings.ts) · [`src/prefs.ts`](src/prefs.ts) · [`schemas/`](schemas/) | Configurações tipadas, entrada das preferências e schema GSettings. |
-| [`scripts/`](scripts/) · [`install.ts`](install.ts) | Build, instalador e atualização com backup. |
+| [`po/`](po/) | Catálogos de tradução; o build os compila para `locale/`. |
+| [`scripts/`](scripts/) · [`install.ts`](install.ts) | Build, empacotamento, traduções, instalador e atualização com backup. |
 | [`tests/`](tests/) | Testes de domínio, DTOs, serviços, interface e instalação. |
 
 </details>
@@ -285,8 +307,10 @@ código usa retornos antecipados. Os imports do GNOME Shell são diretos; os mó
 `gi://` mantêm o import padrão exigido pelo GJS. GTK/Adwaita são carregados apenas
 no processo de preferências.
 
-A interface usa gettext com o domínio `system-pulse`. Sem catálogo instalado,
-as mensagens originais em português continuam sendo exibidas.
+A interface usa gettext com o domínio `system-pulse` e acompanha o idioma do
+sistema: português (original) e inglês ([`po/en.po`](po/en.po)). O build compila
+os catálogos em TypeScript, sem depender de `msgfmt`, e um teste garante que toda
+mensagem da interface tenha tradução. Para outro idioma, adicione `po/<idioma>.po`.
 
 </details>
 
@@ -313,17 +337,13 @@ consultas, instalação, backup e restauração. As APIs do GNOME e os comandos
 externos são simulados; os testes de arquivos do instalador usam diretórios
 temporários reais. A verificação visual é feita no GNOME de teste.
 
-<details>
-<summary><b>🏷️ Compatibilidade com o antigo RAM Widget</b></summary>
+## 📄 Licença
 
-<br>
+Distribuído sob a [licença MIT](LICENSE). Use, modifique e redistribua à vontade.
 
-O projeto passou a se chamar **System Pulse**. O UUID `ram-widget@local`, o schema
-e o caminho GSettings e o identificador do atalho instalado foram mantidos para
-preservar preferências, ativação e favoritos. A instalação funciona
-independentemente do nome da pasta do checkout.
-
-</details>
+O repositório principal fica no [GitLab](https://gitlab.com/danie1net0/system-pulse);
+o [GitHub](https://github.com/danie1net0/system-pulse) é uma réplica automática.
+Issues e merge requests são bem-vindos no GitLab.
 
 ---
 

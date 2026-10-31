@@ -5,7 +5,7 @@ import SystemPulseExtension from '../../src/extension.ts';
 import SystemPulsePreferences from '../../src/prefs.ts';
 import {PopupMenu, reset, state} from '../support/gnome.ts';
 
-const metadata = {uuid: 'ram-widget@local', name: 'System Pulse', description: 'Teste', 'shell-version': ['50']};
+const metadata = {uuid: 'system-pulse@danie1net0.gitlab.io', name: 'System Pulse', description: 'Teste', 'shell-version': ['50']};
 
 beforeEach(() => {
     reset();

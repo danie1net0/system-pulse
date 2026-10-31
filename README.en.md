@@ -11,6 +11,8 @@
   <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript in strict mode">
   <img src="https://img.shields.io/badge/Node.js-24+-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 24 or later">
   <img src="https://img.shields.io/badge/coverage-100%25-54E1C1?style=for-the-badge" alt="100% test coverage">
+  <a href="https://gitlab.com/danie1net0/system-pulse/-/pipelines"><img src="https://img.shields.io/gitlab/pipeline-status/danie1net0%2Fsystem-pulse?branch=master&style=for-the-badge&logo=gitlab&label=pipeline" alt="Pipeline"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F2C94C?style=for-the-badge" alt="MIT license"></a>
 </p>
 
 **CPU, memory and the hungriest processes — right on the GNOME top bar.**<br>
@@ -31,10 +33,6 @@
 </div>
 
 <br>
-
-> [!NOTE]
-> The widget interface is currently in **Portuguese**. It uses gettext with the
-> `system-pulse` domain, so it is ready for translation catalogs.
 
 ## ✨ Highlights
 
@@ -83,12 +81,30 @@ node install.ts
 
 That’s it. The installer checks your environment, installs npm dependencies,
 builds the project, copies the files, installs the mascot icon, creates the
-**System Pulse — Adicionar à barra** launcher and tries to enable the extension.
+**System Pulse — Add to bar** launcher and tries to enable the extension.
+
+<details>
+<summary><b>📦 No Node.js: install the release package</b></summary>
+
+<br>
+
+Download `system-pulse@danie1net0.gitlab.io.shell-extension.zip` from the
+[releases page](https://gitlab.com/danie1net0/system-pulse/-/releases) and run:
+
+```sh
+gnome-extensions install --force system-pulse@danie1net0.gitlab.io.shell-extension.zip
+```
+
+Then log out and back in, and enable it with
+`gnome-extensions enable system-pulse@danie1net0.gitlab.io`. This mode doesn’t
+create the mascot launcher.
+
+</details>
 
 > [!NOTE]
 > **Widget not showing up?** If GNOME doesn’t recognize the extension yet, save
 > your work, log out and back in. Then open the launcher or run
-> `gnome-extensions enable ram-widget@local`.
+> `gnome-extensions enable system-pulse@danie1net0.gitlab.io`.
 
 ### Requirements
 
@@ -135,8 +151,8 @@ The installer uses `$XDG_DATA_HOME` when it is an absolute path, or
 
 | Item | Path relative to the data directory |
 | --- | --- |
-| Extension | `gnome-shell/extensions/ram-widget@local/` |
-| Launcher | `applications/ram-widget-enable.desktop` |
+| Extension | `gnome-shell/extensions/system-pulse@danie1net0.gitlab.io/` |
+| Launcher | `applications/system-pulse-enable.desktop` |
 | Mascot | `icons/hicolor/512x512/apps/system-pulse.png` |
 | Backups | `system-pulse/backups/` |
 
@@ -154,22 +170,22 @@ preserved.
 
 | In the widget menu | What it does |
 | --- | --- |
-| **Ordenar por** <sub>(sort by)</sub> | Switches the ranking between **RAM (RSS)** and **CPU (recent activity)**. |
-| **Preferências…** <sub>(preferences)</sub> | Picks the bar content, refresh interval and process count — saved and applied instantly. |
-| **Abrir Monitor do Sistema** <sub>(open System Monitor)</sub> | Launches the GNOME app, or explains how to install it. |
-| **Remover da barra** <sub>(remove from bar)</sub> | Disables the extension and stops updates; files and preferences stay. |
+| **Sort by** | Switches the ranking between **RAM (RSS)** and **CPU (recent activity)**. |
+| **Preferences…** | Picks the bar content, refresh interval and process count — saved and applied instantly. |
+| **Open System Monitor** | Launches the GNOME app, or explains how to install it. |
+| **Remove from bar** | Disables the extension and stops updates; files and preferences stay. |
 
 ### Adding it back to the bar
 
 Press <kbd>Super</kbd>, search for **System Pulse** and open
-**System Pulse — Adicionar à barra**. You can also pin that launcher to your
+**System Pulse — Add to bar**. You can also pin that launcher to your
 favorites or enable the widget from the **Extensions** app. From a terminal in
 the session:
 
 ```sh
-gnome-extensions enable ram-widget@local    # enable
-gnome-extensions disable ram-widget@local   # disable
-gnome-extensions info ram-widget@local      # check status
+gnome-extensions enable system-pulse@danie1net0.gitlab.io    # enable
+gnome-extensions disable system-pulse@danie1net0.gitlab.io   # disable
+gnome-extensions info system-pulse@danie1net0.gitlab.io      # check status
 ```
 
 Re-enabling an already loaded version doesn’t require logging out. The widget
@@ -216,6 +232,7 @@ node install.ts --dev   # link the install to this checkout
 npm ci                  # install dependencies
 npm run build           # compile src/ → build/, generate extension.js, prefs.js and the schema
 npm run watch           # recompile TypeScript on every change
+npm run pack            # build dist/<uuid>.shell-extension.zip for a release
 ```
 
 Edit only source files; generated files are recreated on the next build. After
@@ -243,7 +260,7 @@ you restart just the test session, without closing your desktop.
 3. Inside the test window, open a terminal and enable the extension:
 
    ```sh
-   gnome-extensions enable ram-widget@local
+   gnome-extensions enable system-pulse@danie1net0.gitlab.io
    ```
 
 4. Edit `src/`, run `npm run build`, close the test window and repeat step 2.
@@ -266,7 +283,8 @@ uses the same user’s files.
 | [`src/presenters/`](src/presenters/) | Formatting metrics into presentation DTOs. |
 | [`src/ui/`](src/ui/) | Indicator, process rows and preferences window. |
 | [`src/settings.ts`](src/settings.ts) · [`src/prefs.ts`](src/prefs.ts) · [`schemas/`](schemas/) | Typed settings, preferences entry point and GSettings schema. |
-| [`scripts/`](scripts/) · [`install.ts`](install.ts) | Build, installer and backed-up updates. |
+| [`po/`](po/) | Translation catalogs; the build compiles them into `locale/`. |
+| [`scripts/`](scripts/) · [`install.ts`](install.ts) | Build, packaging, translations, installer and backed-up updates. |
 | [`tests/`](tests/) | Domain, DTO, service, UI and installer tests. |
 
 </details>
@@ -288,8 +306,10 @@ Free functions are arrow functions, control flow always uses braces, and the cod
 favors early returns. GNOME Shell imports are direct; `gi://` modules keep the
 default import GJS requires. GTK/Adwaita are only loaded in the preferences process.
 
-The UI uses gettext with the `system-pulse` domain. Without an installed catalog,
-the original Portuguese strings are shown.
+The UI uses gettext with the `system-pulse` domain and follows the system
+language: Portuguese (original) and English ([`po/en.po`](po/en.po)). The build
+compiles catalogs in TypeScript, without needing `msgfmt`, and a test ensures every
+UI message is translated. To add a language, create `po/<language>.po`.
 
 </details>
 
@@ -315,17 +335,13 @@ PID reuse, ranking, preferences, query cancellation, installation, backup and
 restore. GNOME APIs and external commands are mocked; installer file tests use
 real temporary directories. Visual checks happen in the nested GNOME session.
 
-<details>
-<summary><b>🏷️ Compatibility with the former RAM Widget</b></summary>
+## 📄 License
 
-<br>
+Released under the [MIT license](LICENSE). Use, modify and redistribute freely.
 
-The project is now called **System Pulse**. The `ram-widget@local` UUID, the
-GSettings schema and path, and the installed launcher ID were kept to preserve
-preferences, activation and favorites. Installing works regardless of the
-checkout folder name.
-
-</details>
+The main repository lives on [GitLab](https://gitlab.com/danie1net0/system-pulse);
+[GitHub](https://github.com/danie1net0/system-pulse) is an automatic mirror.
+Issues and merge requests are welcome on GitLab.
 
 ---
 
