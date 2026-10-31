@@ -67,6 +67,12 @@
   </tr>
 </table>
 
+### 📸 In action
+
+<p align="center">
+  <img src="assets/readme-screenshot.en.png" alt="Real System Pulse screenshot on GNOME Shell 50: the bar shows CPU 26% and RAM 82% and the open menu lists CPU, RAM, swap and the five processes using the most memory" width="640">
+</p>
+
 > [!TIP]
 > **Defaults:** CPU and RAM on the bar · refresh every **2 seconds** ·
 > the **5 processes** using the most RAM.

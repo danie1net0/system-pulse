@@ -67,6 +67,12 @@
   </tr>
 </table>
 
+### 📸 Na prática
+
+<p align="center">
+  <img src="assets/readme-screenshot.png" alt="Captura real do System Pulse no GNOME Shell 50: barra com CPU 26% e RAM 80% e o menu aberto com CPU, RAM, swap e os cinco processos que mais usam memória" width="640">
+</p>
+
 > [!TIP]
 > **Configuração padrão:** CPU e RAM na barra · atualização a cada **2 segundos** ·
 > os **5 processos** que mais usam RAM.
