@@ -67,11 +67,11 @@ test('packageEntries inclui apenas os arquivos de execução, o build e as tradu
     assert.throws(() => packageEntries(root), /Arquivos ausentes: prefs\.js, stylesheet\.css\. Execute npm run build/);
 });
 
-test('pack grava dist/<uuid>.shell-extension.zip com o conteúdo do pacote', context => {
+test('pack grava dist/<nome>.shell-extension.zip com o conteúdo do pacote', context => {
     const root = fixture(context);
     const output = pack(root);
 
-    assert.equal(output, join(root, 'dist/teste@exemplo.shell-extension.zip'));
+    assert.equal(output, join(root, 'dist/teste.shell-extension.zip'));
 
     const files = readZip(readFileSync(output));
 

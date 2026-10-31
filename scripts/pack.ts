@@ -80,7 +80,7 @@ export const pack = (root: string): string => {
         throw new Error('metadata.json não define o UUID da extensão.');
     }
 
-    const output = join(root, 'dist', `${metadata.uuid}.shell-extension.zip`);
+    const output = join(root, 'dist', `${metadata.uuid.split('@')[0]}.shell-extension.zip`);
 
     mkdirSync(join(root, 'dist'), {recursive: true});
     writeFileSync(output, createZip(new Map(packageEntries(root).map(file => [file, readFileSync(join(root, file))]))));

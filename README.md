@@ -88,11 +88,11 @@ projeto, copia os arquivos, instala o mascote, cria o atalho
 
 <br>
 
-Baixe `system-pulse@danie1net0.gitlab.io.shell-extension.zip` na
+Baixe `system-pulse.shell-extension.zip` na
 [página de releases](https://gitlab.com/danie1net0/system-pulse/-/releases) e execute:
 
 ```sh
-gnome-extensions install --force system-pulse@danie1net0.gitlab.io.shell-extension.zip
+gnome-extensions install --force system-pulse.shell-extension.zip
 ```
 
 Depois, saia da sessão e entre novamente, e ative com
@@ -232,7 +232,7 @@ node install.ts --dev   # conecta a instalação a este checkout
 npm ci                  # instala as dependências
 npm run build           # compila src/ → build/, gera extension.js, prefs.js e o schema
 npm run watch           # recompila o TypeScript a cada alteração
-npm run pack            # gera dist/<uuid>.shell-extension.zip para a release
+npm run pack            # gera dist/system-pulse.shell-extension.zip para a release
 ```
 
 Edite apenas os arquivos de origem; os gerados são recriados no próximo build.

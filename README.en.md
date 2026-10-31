@@ -88,11 +88,11 @@ builds the project, copies the files, installs the mascot icon, creates the
 
 <br>
 
-Download `system-pulse@danie1net0.gitlab.io.shell-extension.zip` from the
+Download `system-pulse.shell-extension.zip` from the
 [releases page](https://gitlab.com/danie1net0/system-pulse/-/releases) and run:
 
 ```sh
-gnome-extensions install --force system-pulse@danie1net0.gitlab.io.shell-extension.zip
+gnome-extensions install --force system-pulse.shell-extension.zip
 ```
 
 Then log out and back in, and enable it with
@@ -232,7 +232,7 @@ node install.ts --dev   # link the install to this checkout
 npm ci                  # install dependencies
 npm run build           # compile src/ → build/, generate extension.js, prefs.js and the schema
 npm run watch           # recompile TypeScript on every change
-npm run pack            # build dist/<uuid>.shell-extension.zip for a release
+npm run pack            # build dist/system-pulse.shell-extension.zip for a release
 ```
 
 Edit only source files; generated files are recreated on the next build. After
