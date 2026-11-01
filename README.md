@@ -23,6 +23,7 @@
   <a href="#-instalação-rápida"><b>Instalar</b></a> ·
   <a href="#-usar">Usar</a> ·
   <a href="#-métricas">Métricas</a> ·
+  <a href="#-xfce">XFCE</a> ·
   <a href="#-desenvolver">Desenvolver</a> ·
   <a href="#-verificar">Verificar</a>
 </p>
@@ -239,6 +240,35 @@ de preferências.
 
 </details>
 
+## 🐭 XFCE
+
+Fora do GNOME, o System Pulse funciona no painel do **XFCE** pelo plugin
+**Monitor Genérico** (Generic Monitor). É um script em `sh` + `awk`, sem Node.js nem
+outras dependências em execução: a barra mostra `CPU 12% · RAM 41%`, o tooltip
+traz memória, swap e os processos que mais usam RAM, e o clique abre o
+gerenciador de tarefas.
+
+```sh
+sudo apt install xfce4-genmon-plugin   # uma vez, se ainda não tiver
+xfce/install.sh                        # copia para ~/.local/bin, sem sudo
+```
+
+Depois, clique com o botão direito no painel → **Painel → Adicionar novos itens →
+Monitor Genérico** e, nas propriedades, use o comando
+`~/.local/bin/system-pulse-genmon`, desmarque o rótulo e defina o período em
+2 segundos.
+
+| Opção | Efeito |
+| --- | --- |
+| `--mode both\|cpu\|ram` | Métricas exibidas no painel. Padrão: `both`. |
+| `--count 1-20` | Processos listados no tooltip. Padrão: `5`. |
+| `--process-every N` | Refaz a lista de processos a cada N atualizações. Padrão: `5`. |
+
+> [!NOTE]
+> O Monitor Genérico executa o comando a cada atualização. Por isso, só os números
+> da barra são lidos toda vez (~6 ms). A lista de processos, a parte mais cara,
+> é refeita a cada 5 atualizações.
+
 ## 🛠️ Desenvolver
 
 ```sh
@@ -297,6 +327,7 @@ usa os arquivos do mesmo usuário.
 | [`src/presenters/`](src/presenters/) | Formatação das métricas nos DTOs de apresentação. |
 | [`src/ui/`](src/ui/) | Indicador, linhas de processos e tela de preferências. |
 | [`src/settings.ts`](src/settings.ts) · [`src/prefs.ts`](src/prefs.ts) · [`schemas/`](schemas/) | Configurações tipadas, entrada das preferências e schema GSettings. |
+| [`xfce/`](xfce/) | Versão para o painel do XFCE (Monitor Genérico) e seu instalador. |
 | [`po/`](po/) | Catálogos de tradução; o build os compila para `locale/`. |
 | [`scripts/`](scripts/) · [`install.ts`](install.ts) | Build, empacotamento, traduções, instalador e atualização com backup. |
 | [`tests/`](tests/) | Testes de domínio, DTOs, serviços, interface e instalação. |

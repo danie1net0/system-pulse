@@ -23,6 +23,7 @@
   <a href="#-quick-install"><b>Install</b></a> ·
   <a href="#-usage">Usage</a> ·
   <a href="#-metrics">Metrics</a> ·
+  <a href="#-xfce">XFCE</a> ·
   <a href="#-development">Development</a> ·
   <a href="#-verification">Verification</a>
 </p>
@@ -239,6 +240,33 @@ pending queries. Disabling also removes the timer and preference signals.
 
 </details>
 
+## 🐭 XFCE
+
+Outside GNOME, System Pulse runs on the **XFCE** panel through the **Generic
+Monitor** plugin. It is an `sh` + `awk` script, with no Node.js or other runtime
+dependencies: the panel shows `CPU 12% · RAM 41%`, the tooltip lists memory, swap
+and the processes using the most RAM, and a click opens the task manager.
+
+```sh
+sudo apt install xfce4-genmon-plugin   # once, if you do not have it yet
+xfce/install.sh                        # copies to ~/.local/bin, no sudo
+```
+
+Then right-click the panel → **Panel → Add New Items → Generic Monitor** and, in
+its properties, use the command `~/.local/bin/system-pulse-genmon`, untick the
+label and set the period to 2 seconds.
+
+| Option | Effect |
+| --- | --- |
+| `--mode both\|cpu\|ram` | Metrics shown in the panel. Default: `both`. |
+| `--count 1-20` | Processes listed in the tooltip. Default: `5`. |
+| `--process-every N` | Rebuilds the process list every N refreshes. Default: `5`. |
+
+> [!NOTE]
+> Generic Monitor runs the command on every refresh. That is why only the panel
+> numbers are read every time (~6 ms). The process list, the costly part, is
+> rebuilt every 5 refreshes.
+
 ## 🛠️ Development
 
 ```sh
@@ -297,6 +325,7 @@ uses the same user’s files.
 | [`src/presenters/`](src/presenters/) | Formatting metrics into presentation DTOs. |
 | [`src/ui/`](src/ui/) | Indicator, process rows and preferences window. |
 | [`src/settings.ts`](src/settings.ts) · [`src/prefs.ts`](src/prefs.ts) · [`schemas/`](schemas/) | Typed settings, preferences entry point and GSettings schema. |
+| [`xfce/`](xfce/) | XFCE panel version (Generic Monitor) and its installer. |
 | [`po/`](po/) | Translation catalogs; the build compiles them into `locale/`. |
 | [`scripts/`](scripts/) · [`install.ts`](install.ts) | Build, packaging, translations, installer and backed-up updates. |
 | [`tests/`](tests/) | Domain, DTO, service, UI and installer tests. |
