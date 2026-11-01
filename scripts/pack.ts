@@ -2,9 +2,9 @@ import {mkdirSync, readdirSync, readFileSync, statSync, writeFileSync} from 'nod
 import {join} from 'node:path';
 import {crc32, deflateRawSync} from 'node:zlib';
 
-export const PACKAGE_FILES = ['metadata.json', 'extension.js', 'prefs.js', 'stylesheet.css',
+export const PACKAGE_FILES = ['metadata.json', 'stylesheet.css',
     'schemas/org.gnome.shell.extensions.system-pulse.gschema.xml'] as const;
-export const PACKAGE_DIRECTORIES = ['build', 'locale'] as const;
+export const ENTRY_POINTS = ['build/extension.js', 'build/prefs.js'] as const;
 
 const listFiles = (root: string, directory: string): string[] => {
     return readdirSync(join(root, directory), {recursive: true, encoding: 'utf8'})
@@ -13,14 +13,28 @@ const listFiles = (root: string, directory: string): string[] => {
         .sort();
 };
 
-export const packageEntries = (root: string): readonly string[] => {
-    const missing = PACKAGE_FILES.filter(file => !statSync(join(root, file), {throwIfNoEntry: false})?.isFile());
+// Módulos só com tipos compilam para `export {};` e nunca são importados em execução.
+const emptyModule = (path: string): boolean => {
+    return path.endsWith('.js') && readFileSync(path, 'utf8').replace(/\s/g, '') === 'export{};';
+};
+
+// O conteúdo de build/ vai para a raiz da extensão, sem arquivos de entrada que apenas reexportam.
+export const runtimeEntries = (root: string): readonly (readonly [string, string])[] => {
+    return [
+        ...listFiles(root, 'build').filter(file => !emptyModule(join(root, file)))
+            .map(file => [file.slice('build/'.length), file] as const),
+        ...listFiles(root, 'locale').map(file => [file, file] as const),
+    ];
+};
+
+export const packageEntries = (root: string): readonly (readonly [string, string])[] => {
+    const missing = [...PACKAGE_FILES, ...ENTRY_POINTS].filter(file => !statSync(join(root, file), {throwIfNoEntry: false})?.isFile());
 
     if (missing.length) {
         throw new Error(`Arquivos ausentes: ${missing.join(', ')}. Execute npm run build antes de empacotar.`);
     }
 
-    return [...PACKAGE_FILES, ...PACKAGE_DIRECTORIES.flatMap(directory => listFiles(root, directory))];
+    return [...PACKAGE_FILES.map(file => [file, file] as const), ...runtimeEntries(root)];
 };
 
 export const createZip = (files: ReadonlyMap<string, Buffer>): Buffer => {
@@ -83,7 +97,7 @@ export const pack = (root: string): string => {
     const output = join(root, 'dist', `${metadata.uuid.split('@')[0]}.shell-extension.zip`);
 
     mkdirSync(join(root, 'dist'), {recursive: true});
-    writeFileSync(output, createZip(new Map(packageEntries(root).map(file => [file, readFileSync(join(root, file))]))));
+    writeFileSync(output, createZip(new Map(packageEntries(root).map(([name, file]) => [name, readFileSync(join(root, file))]))));
 
     return output;
 };

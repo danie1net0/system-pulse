@@ -4,7 +4,7 @@ import {tmpdir} from 'node:os';
 import {dirname, join} from 'node:path';
 import {test} from 'node:test';
 import {crc32, inflateRawSync} from 'node:zlib';
-import {createZip, PACKAGE_FILES, pack, packageEntries} from '../scripts/pack.ts';
+import {createZip, ENTRY_POINTS, PACKAGE_FILES, pack, packageEntries} from '../scripts/pack.ts';
 
 const readZip = (data: Buffer): Map<string, string> => {
     const end = data.length - 22;
@@ -38,13 +38,14 @@ const fixture = (context: {after: (callback: () => void) => void}): string => {
 
     context.after(() => rmSync(root, {recursive: true, force: true}));
 
-    for (const file of [...PACKAGE_FILES, 'build/ui/indicator.js', 'build/extension.js',
+    for (const file of [...PACKAGE_FILES, ...ENTRY_POINTS, 'build/ui/indicator.js', 'extension.js',
         'locale/en/LC_MESSAGES/system-pulse.mo', 'src/extension.ts', 'schemas/gschemas.compiled']) {
         mkdirSync(dirname(join(root, file)), {recursive: true});
         writeFileSync(join(root, file), `conteúdo: ${file}`);
     }
 
     writeFileSync(join(root, 'metadata.json'), JSON.stringify({uuid: 'teste@exemplo'}));
+    writeFileSync(join(root, 'build/types.js'), 'export {};\n');
 
     return root;
 };
@@ -57,14 +58,15 @@ test('createZip gera um arquivo ZIP com deflate e nomes em UTF-8', () => {
     assert.equal(files.get('vazio'), '');
 });
 
-test('packageEntries inclui apenas os arquivos de execução, o build e as traduções', context => {
+test('packageEntries põe o build na raiz, sem aliases nem módulos só de tipos', context => {
     const root = fixture(context);
 
-    assert.deepEqual(packageEntries(root), [...PACKAGE_FILES, 'build/extension.js', 'build/ui/indicator.js',
-        'locale/en/LC_MESSAGES/system-pulse.mo']);
-    rmSync(join(root, 'prefs.js'));
+    assert.deepEqual(packageEntries(root).map(([name]) => name), [...PACKAGE_FILES, 'extension.js', 'prefs.js',
+        'ui/indicator.js', 'locale/en/LC_MESSAGES/system-pulse.mo']);
+    assert.deepEqual(packageEntries(root).find(([name]) => name === 'extension.js'), ['extension.js', 'build/extension.js']);
+    rmSync(join(root, 'build/prefs.js'));
     rmSync(join(root, 'stylesheet.css'));
-    assert.throws(() => packageEntries(root), /Arquivos ausentes: prefs\.js, stylesheet\.css\. Execute npm run build/);
+    assert.throws(() => packageEntries(root), /Arquivos ausentes: stylesheet\.css, build\/prefs\.js\. Execute npm run build/);
 });
 
 test('pack grava dist/<nome>.shell-extension.zip com o conteúdo do pacote', context => {
@@ -75,7 +77,9 @@ test('pack grava dist/<nome>.shell-extension.zip com o conteúdo do pacote', con
 
     const files = readZip(readFileSync(output));
 
-    assert.equal(files.get('build/ui/indicator.js'), 'conteúdo: build/ui/indicator.js');
+    assert.equal(files.get('ui/indicator.js'), 'conteúdo: build/ui/indicator.js');
+    assert.equal(files.get('extension.js'), 'conteúdo: build/extension.js');
+    assert.ok(!files.has('types.js'));
     assert.ok(files.has('locale/en/LC_MESSAGES/system-pulse.mo'));
     assert.ok(!files.has('src/extension.ts'));
     assert.ok(!files.has('schemas/gschemas.compiled'));

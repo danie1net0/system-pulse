@@ -6,6 +6,7 @@ import GLib from 'gi://GLib';
 import {extensionManager, panel} from 'resource:///org/gnome/shell/ui/main.js';
 import type {ProcessUsage} from './data/process-usage.ts';
 import type {StatsView} from './data/stats-view.ts';
+import {StatsSnapshot} from './data/stats-snapshot.ts';
 import type {WidgetOptions} from './data/widget-options.ts';
 import {openSystemMonitor} from './platform/system-monitor.ts';
 import {ProcessService} from './services/processes.ts';
@@ -31,7 +32,7 @@ export class WidgetController {
 
         this.settings = settings;
         this.options = readOptions(settings);
-        this.stats = this.statsPresenter.present(this.statsService.sample());
+        this.stats = this.statsPresenter.present(new StatsSnapshot(null, null, null));
 
         this.indicator = new WidgetIndicator(name, {
             selectMetric: metric => {settings.set_string(SETTINGS.metric, metric);},
@@ -61,6 +62,7 @@ export class WidgetController {
 
         this.settingsSignal = settings.connect('changed', () => this.settingsChanged());
         this.startTimer();
+        void this.updateStats();
     }
 
     dispose(): void {
@@ -68,6 +70,7 @@ export class WidgetController {
 
         this.settings.disconnect(this.settingsSignal);
         this.stopTimer();
+        this.statsService.dispose();
         this.processService.dispose();
         this.indicator.destroy();
     }
@@ -90,8 +93,7 @@ export class WidgetController {
         this.stopTimer();
 
         this.timerId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, this.options.intervalSeconds, () => {
-            this.stats = this.statsPresenter.present(this.statsService.sample());
-            this.indicator.renderStats(this.stats, this.options);
+            void this.updateStats();
 
             if (this.indicator.menu.isOpen) {
                 void this.updateProcesses();
@@ -107,6 +109,18 @@ export class WidgetController {
         }
 
         this.timerId = 0;
+    }
+
+    private async updateStats(): Promise<void> {
+        const snapshot = await this.statsService.sample();
+
+        // Amostras canceladas pelo dispose chegam como null.
+        if (!snapshot) {
+            return;
+        }
+
+        this.stats = this.statsPresenter.present(snapshot);
+        this.indicator.renderStats(this.stats, this.options);
     }
 
     private async updateProcesses(): Promise<void> {

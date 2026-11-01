@@ -21,31 +21,48 @@ beforeEach(() => {
     state.processOutput = '42 2048 processo\n43 1024 inacessível';
 });
 
-test('amostragem retorna dados sem apresentação e reinicia CPU após falha', context => {
+test('amostragem retorna dados sem apresentação e reinicia CPU após falha', async context => {
     const errors = context.mock.method(console, 'error', () => undefined);
     const service = new StatsService();
-    const first = service.sample();
+    const first = await service.sample();
 
-    assert.equal(first.cpuPercent, null);
-    assert.equal(first.logicalCpuCount, 1);
-    assert.equal(first.memory?.percent, 75);
+    assert.equal(first?.cpuPercent, null);
+    assert.equal(first?.logicalCpuCount, 1);
+    assert.equal(first?.memory?.percent, 75);
 
     state.contents.set('/proc/stat', cpu(60, 140));
 
-    assert.equal(service.sample().cpuPercent, 50);
+    assert.equal((await service.sample())?.cpuPercent, 50);
 
     state.contents.clear();
 
-    const unavailable = service.sample();
+    const unavailable = await service.sample();
 
-    assert.equal(unavailable.cpuPercent, null);
-    assert.equal(unavailable.logicalCpuCount, null);
-    assert.equal(unavailable.memory, null);
+    assert.equal(unavailable?.cpuPercent, null);
+    assert.equal(unavailable?.logicalCpuCount, null);
+    assert.equal(unavailable?.memory, null);
     assert.equal(errors.mock.callCount(), 2);
 
     state.contents.set('/proc/stat', cpu(70, 150));
+    state.contents.set('/proc/meminfo', 'inválido');
 
-    assert.equal(service.sample().cpuPercent, null);
+    assert.equal((await service.sample())?.cpuPercent, null);
+    assert.equal(errors.mock.callCount(), 3);
+});
+
+test('amostragem ocupada ou descartada não lê novamente', async () => {
+    state.paused = true;
+
+    const service = new StatsService();
+    const pending = service.sample();
+
+    assert.equal(await service.sample(), null);
+
+    service.dispose();
+    await flush();
+
+    assert.equal(await pending, null);
+    assert.equal(await service.sample(), null);
 });
 
 test('processos calculam atividade recente e toleram PID inacessível', async () => {

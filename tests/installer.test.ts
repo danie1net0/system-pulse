@@ -33,7 +33,8 @@ test('reinstala com backup e retira arquivos antigos do runtime', context => {
     const second = installFiles({...installationFixture, development: false});
 
     assert.ok(second.backup);
-    assert.equal(readFileSync(join(second.extension, 'build/extension.js'), 'utf8'), 'novo');
+    assert.equal(readFileSync(join(second.extension, 'extension.js'), 'utf8'), 'novo');
+    assert.equal(existsSync(join(second.extension, 'build')), false);
     assert.equal(existsSync(join(second.extension, 'obsoleto.js')), false);
     assert.equal(readFileSync(join(second.backup, 'old-0/obsoleto.js'), 'utf8'), 'antigo');
     assert.ok(existsSync(join(second.backup, 'restore.json')));
@@ -84,7 +85,7 @@ test('build ausente falha antes de substituir uma instalação', context => {
     rmSync(join(installationFixture.source, 'build/extension.js'));
 
     assert.throws(() => installFiles({...installationFixture, development: false}), /Arquivo ausente/);
-    assert.equal(readFileSync(join(installed.extension, 'build/extension.js'), 'utf8'), 'fixture: build/extension.js');
+    assert.equal(readFileSync(join(installed.extension, 'extension.js'), 'utf8'), 'fixture: build/extension.js');
 });
 
 test('recusa destino sobreposto ao projeto e extensão com outro UUID', context => {
@@ -183,6 +184,6 @@ test('preserva o backup e informa os erros quando o rollback também falha', con
     const preserved = readdirSync(installationFixture.dataHome).find(name => name.startsWith('.system-pulse-install-'));
 
     assert.ok(preserved);
-    assert.equal(readFileSync(join(installationFixture.dataHome, preserved, 'old-0/build/extension.js'), 'utf8'),
+    assert.equal(readFileSync(join(installationFixture.dataHome, preserved, 'old-0/extension.js'), 'utf8'),
         'fixture: build/extension.js');
 });

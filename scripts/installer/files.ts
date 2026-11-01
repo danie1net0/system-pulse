@@ -1,6 +1,7 @@
 import {cpSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, realpathSync,
     renameSync, rmSync, statSync, symlinkSync, writeFileSync} from 'node:fs';
 import {dirname, join, relative, sep} from 'node:path';
+import {runtimeEntries} from '../pack.ts';
 import type {InstallFilesOptions} from './data/install-files-options.ts';
 import {InstallResult} from './data/install-result.ts';
 
@@ -59,15 +60,11 @@ const stageExtension = (options: InstallFilesOptions, source: string, destinatio
 
     mkdirSync(destination);
 
-    for (const file of runtimeFiles) {
-        const target = join(destination, file);
+    for (const [name, file] of [...runtimeFiles.map(file => [file, file] as const), ...runtimeEntries(source)]) {
+        const target = join(destination, name);
 
         mkdirSync(dirname(target), {recursive: true});
         cpSync(join(source, file), target);
-    }
-
-    for (const directory of ['build', 'locale']) {
-        cpSync(join(source, directory), join(destination, directory), {recursive: true});
     }
 };
 
@@ -84,7 +81,7 @@ export const installFiles = (options: InstallFilesOptions): InstallResult => {
         throw new Error('O destino de instalação não pode se sobrepor à pasta do projeto.');
     }
 
-    const runtimeFiles = ['extension.js', 'prefs.js', 'metadata.json', 'stylesheet.css',
+    const runtimeFiles = ['metadata.json', 'stylesheet.css',
         'schemas/gschemas.compiled', 'schemas/org.gnome.shell.extensions.system-pulse.gschema.xml'];
     for (const file of [...runtimeFiles, 'build/extension.js', 'build/prefs.js',
         'locale/en/LC_MESSAGES/system-pulse.mo', 'assets/system-pulse.png']) {

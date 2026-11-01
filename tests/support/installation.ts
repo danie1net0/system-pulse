@@ -7,7 +7,7 @@ export const fixture = (): {root: string; source: string; dataHome: string; clea
     const root = mkdtempSync(join(tmpdir(), 'system-pulse-installer-'));
     const source = join(root, 'projeto com espaços');
     const dataHome = join(root, 'dados com espaços');
-    const files = ['extension.js', 'prefs.js', 'stylesheet.css', 'build/extension.js', 'build/prefs.js',
+    const files = ['stylesheet.css', 'build/extension.js', 'build/prefs.js',
         'schemas/gschemas.compiled', 'schemas/org.gnome.shell.extensions.system-pulse.gschema.xml',
         'locale/en/LC_MESSAGES/system-pulse.mo', 'assets/system-pulse.png'];
     for (const file of files) {

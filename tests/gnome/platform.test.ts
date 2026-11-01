@@ -1,24 +1,19 @@
 import assert from 'node:assert/strict';
 import {beforeEach, test} from 'node:test';
 import Gio from 'gi://Gio';
-import {readText, readTextAsync} from '../../src/platform/files.ts';
+import {readTextAsync} from '../../src/platform/files.ts';
 import {openSystemMonitor} from '../../src/platform/system-monitor.ts';
 import {reset, state} from '../support/gnome.ts';
 
 beforeEach(reset);
 
-test('leitura síncrona e assíncrona decodifica UTF-8 e propaga falhas', async () => {
+test('leitura assíncrona decodifica UTF-8 e propaga falhas', async () => {
     state.contents.set('/arquivo', 'memória');
 
-    assert.equal(readText('/arquivo'), 'memória');
     assert.equal(await readTextAsync('/arquivo', new Gio.Cancellable()), 'memória');
-    assert.throws(() => readText('/ausente'), /Não foi possível ler/);
-
     await assert.rejects(readTextAsync('/ausente', new Gio.Cancellable()), /Não foi possível ler/);
 
     state.contents.set('/negado', new Error('negado'));
-
-    assert.throws(() => readText('/negado'), /negado/);
 
     await assert.rejects(readTextAsync('/negado', new Gio.Cancellable()), /negado/);
 });
