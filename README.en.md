@@ -7,6 +7,7 @@
 <br>
 
 <p>
+  <a href="https://extensions.gnome.org/extension/11577/system-pulse/"><img src="https://img.shields.io/badge/extensions%2Egnome%2Eorg-System_Pulse-4A86CF?style=for-the-badge&logo=gnome&logoColor=white" alt="Available on extensions.gnome.org"></a>
   <img src="https://img.shields.io/badge/GNOME_Shell-50-4A86CF?style=for-the-badge&logo=gnome&logoColor=white" alt="GNOME Shell 50">
   <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript in strict mode">
   <img src="https://img.shields.io/badge/Node.js-24+-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 24 or later">
@@ -78,6 +79,13 @@
 > the **5 processes** using the most RAM.
 
 ## 🚀 Quick install
+
+The easiest way is through **[extensions.gnome.org](https://extensions.gnome.org/extension/11577/system-pulse/)**: open the page in a
+browser with the GNOME Shell integration and click **Install**, or use the
+**Extension Manager** app. The site only ships reviewed versions; for the latest one,
+use the installer below.
+
+### From source
 
 From the project folder, **without `sudo`**:
 
