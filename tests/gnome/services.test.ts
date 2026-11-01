@@ -108,12 +108,12 @@ test('falha de ps e saída nula rejeitam e liberam a próxima consulta', async (
 
     state.processSuccess = false;
 
-    await assert.rejects(service.sample(), /Não foi possível consultar/);
+    await assert.rejects(service.sample(), /Could not query processes/);
 
     state.processSuccess = true;
     state.processOutput = null;
 
-    await assert.rejects(service.sample(), /Não foi possível consultar/);
+    await assert.rejects(service.sample(), /Could not query processes/);
 
     state.processOutput = '';
 
@@ -121,7 +121,7 @@ test('falha de ps e saída nula rejeitam e liberam a próxima consulta', async (
 
     state.contents.set('/proc/stat', 'inválido');
 
-    await assert.rejects(service.sample(), /Contadores de CPU/);
+    await assert.rejects(service.sample(), /Invalid CPU counters/);
 
     service.dispose();
 });
@@ -153,5 +153,5 @@ test('cancelamento após leitura bem-sucedida da CPU descarta os dados', async (
 test('ps com transporte bem-sucedido mas código de saída inválido rejeita a leitura', async () => {
     state.processExitSuccess = false;
 
-    await assert.rejects(new ProcessService().sample(), /Não foi possível consultar/);
+    await assert.rejects(new ProcessService().sample(), /Could not query processes/);
 });

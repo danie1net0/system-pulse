@@ -1,14 +1,14 @@
 import {CpuSnapshot} from '../data/cpu-snapshot.ts';
 
 export const parseCpuStat = (content: string): CpuSnapshot => {
-    // guest/guest_nice já estão incluídos em user/nice.
+    // guest/guest_nice are already included in user/nice.
     const line = content.match(/^cpu[ \t]+([^\n]+)/m);
     const times = line?.[1]?.trim().split(/\s+/).slice(0, 8).map(Number);
     const logicalCpuCount = (content.match(/^cpu\d+[ \t]/gm) ?? []).length;
 
     if (!times || times.length !== 8 || logicalCpuCount === 0 ||
         times.some(value => !Number.isSafeInteger(value) || value < 0)) {
-        throw new Error('Contadores de CPU inválidos em /proc/stat');
+        throw new Error('Invalid CPU counters in /proc/stat');
     }
 
     return new CpuSnapshot(times, logicalCpuCount);

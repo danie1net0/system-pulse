@@ -6,7 +6,7 @@ export const parseMemory = (content: string): MemorySnapshot => {
         const number = match ? Number(match[1]) : NaN;
 
         if (!Number.isSafeInteger(number) || number < 0) {
-            throw new Error(`Valor inválido de ${key} em /proc/meminfo`);
+            throw new Error(`Invalid ${key} value in /proc/meminfo`);
         }
 
         return number;
@@ -18,7 +18,7 @@ export const parseMemory = (content: string): MemorySnapshot => {
     const swapFreeKiB = value('SwapFree');
 
     if (totalKiB === 0 || availableKiB > totalKiB || swapFreeKiB > swapTotalKiB) {
-        throw new Error('Contadores de memória inconsistentes');
+        throw new Error('Inconsistent memory counters');
     }
 
     const usedKiB = totalKiB - availableKiB;

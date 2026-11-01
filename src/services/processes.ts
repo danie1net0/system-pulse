@@ -29,7 +29,7 @@ export class ProcessService {
             const processInformation = parseProcessList(await this.listProcesses());
             const processes = new Map<number, ProcessTimes>();
 
-            // Limita I/O simultâneo para não monopolizar o Shell em hosts com muitos PIDs.
+            // Limit concurrent IO so hosts with many PIDs do not monopolize the Shell.
             const processIterator = processInformation.values();
             const worker = async (): Promise<void> => {
                 while (!this.cancellable.is_cancelled()) {
@@ -44,7 +44,7 @@ export class ProcessService {
 
                         processes.set(processInfo.pid, parseProcessTimes(content));
                     } catch {
-                        // O processo pode encerrar ou não ser legível para este usuário.
+                        // The process may have exited or be unreadable for this user.
                     }
                 }
             };
@@ -91,7 +91,7 @@ export class ProcessService {
                     const [success, stdout] = process.communicate_utf8_finish(result);
 
                     if (!success || !process.get_successful() || stdout === null) {
-                        throw new Error('Não foi possível consultar os processos');
+                        throw new Error('Could not query processes');
                     }
 
                     resolve(stdout);

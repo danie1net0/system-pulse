@@ -13,10 +13,10 @@ export const openSystemMonitor = (): void => {
         }
 
         if (!application.launch([], global.create_app_launch_context(0, -1))) {
-            throw new Error('O aplicativo não pôde ser iniciado');
+            throw new Error('The application could not be launched');
         }
     } catch (error) {
-        console.error('[system-pulse] Falha ao abrir Monitor do Sistema:', error);
+        console.error('[system-pulse] Failed to open System Monitor:', error);
         notify('System Pulse', gettext('Não foi possível abrir o Monitor do Sistema.'));
     }
 };

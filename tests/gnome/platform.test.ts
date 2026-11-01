@@ -11,7 +11,7 @@ test('leitura assíncrona decodifica UTF-8 e propaga falhas', async () => {
     state.contents.set('/arquivo', 'memória');
 
     assert.equal(await readTextAsync('/arquivo', new Gio.Cancellable()), 'memória');
-    await assert.rejects(readTextAsync('/ausente', new Gio.Cancellable()), /Não foi possível ler/);
+    await assert.rejects(readTextAsync('/ausente', new Gio.Cancellable()), /Could not read/);
 
     state.contents.set('/negado', new Error('negado'));
 

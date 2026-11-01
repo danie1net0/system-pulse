@@ -46,7 +46,7 @@ test('rejeita dados incompletos, negativos ou não numéricos', () => {
     for (const content of ['', 'cpu 1 2 3\ncpu0 0',
         'cpu 0 0 x 0 0 0 0 0\ncpu0 0', 'cpu -1 0 0 0 0 0 0 0\ncpu0 0',
         'cpu 0 0 0 0 0 0 0 0']) {
-        assert.throws(() => parseCpuStat(content), /Contadores de CPU inválidos/);
+        assert.throws(() => parseCpuStat(content), /Invalid CPU counters/);
     }
 });
 

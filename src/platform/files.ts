@@ -9,7 +9,7 @@ export const readTextAsync = (path: string, cancellable: Gio.Cancellable): Promi
                 const [success, bytes] = file.load_contents_finish(result);
 
                 if (!success) {
-                    throw new Error(`Não foi possível ler ${path}`);
+                    throw new Error(`Could not read ${path}`);
                 }
 
                 resolve(new TextDecoder().decode(bytes));

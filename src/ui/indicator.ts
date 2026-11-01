@@ -40,7 +40,7 @@ export class WidgetIndicator {
         const menu = this.button.menu;
 
         if (!(menu instanceof PopupMenu)) {
-            throw new Error('O indicador precisa de um menu');
+            throw new Error('The indicator needs a menu');
         }
 
         this.menu = menu;

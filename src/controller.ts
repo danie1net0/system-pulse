@@ -44,7 +44,7 @@ export class WidgetController {
                     return;
                 }
 
-                // Uma nova abertura inicia um novo intervalo, sem médias de menu fechado.
+                // Each new opening starts a fresh interval, without averages from while the menu was closed.
                 this.processService.dispose();
                 this.processService = new ProcessService();
                 this.processes = [];
@@ -114,7 +114,7 @@ export class WidgetController {
     private async updateStats(): Promise<void> {
         const snapshot = await this.statsService.sample();
 
-        // Amostras canceladas pelo dispose chegam como null.
+        // Samples cancelled by dispose resolve to null.
         if (!snapshot) {
             return;
         }
@@ -140,7 +140,7 @@ export class WidgetController {
                 return;
             }
 
-            console.error('[system-pulse] Falha ao listar processos:', error);
+            console.error('[system-pulse] Failed to list processes:', error);
             this.indicator.showProcessError();
         }
     }

@@ -125,7 +125,7 @@ test('indicador rejeita botão sem menu compatível', () => {
     assert.throws(() => new WidgetIndicator('System Pulse', {
         selectMetric: () => undefined, openPreferences: () => undefined, openMonitor: () => undefined,
         remove: () => undefined, menuChanged: () => undefined,
-    }), /precisa de um menu/);
+    }), /needs a menu/);
 });
 
 test('janela sincroniza escolhas, vincula números e desconecta sinais ao fechar', () => {

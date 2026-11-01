@@ -27,7 +27,7 @@ export class StatsService {
         this.busy = true;
 
         try {
-            // Leitura assíncrona para não bloquear o loop principal do Shell.
+            // Read asynchronously so the Shell main loop is never blocked.
             const [stat, meminfo] = await Promise.allSettled([
                 readTextAsync('/proc/stat', this.cancellable),
                 readTextAsync('/proc/meminfo', this.cancellable),
@@ -48,7 +48,7 @@ export class StatsService {
                 this.previousCpu = cpu;
             } catch (error) {
                 this.previousCpu = null;
-                console.error('[system-pulse] Falha ao ler CPU:', error);
+                console.error('[system-pulse] Failed to read CPU:', error);
             }
 
             let memory: MemorySnapshot | null = null;
@@ -56,7 +56,7 @@ export class StatsService {
             try {
                 memory = parseMemory(settledText(meminfo));
             } catch (error) {
-                console.error('[system-pulse] Falha ao ler memória:', error);
+                console.error('[system-pulse] Failed to read memory:', error);
             }
 
             return new StatsSnapshot(cpuPercent, logicalCpuCount, memory);

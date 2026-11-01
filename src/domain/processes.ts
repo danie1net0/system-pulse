@@ -27,11 +27,11 @@ export const parseProcessList = (output: string): ProcessInfo[] => {
 };
 
 export const parseProcessTimes = (content: string): ProcessTimes => {
-    // comm pode conter espaços e parênteses; os campos numéricos vêm após o último ')'.
+    // comm may contain spaces and parentheses; numeric fields follow the last ')'.
     const nameEnd = content.lastIndexOf(')');
 
     if (nameEnd < 0 || !/^\d+ \(/.test(content)) {
-        throw new Error('Formato inválido de /proc/PID/stat');
+        throw new Error('Invalid /proc/PID/stat format');
     }
 
     const fields = content.slice(nameEnd + 1).trim().split(/\s+/);
@@ -40,7 +40,7 @@ export const parseProcessTimes = (content: string): ProcessTimes => {
     const startTime = Number(fields[19]); // campo 22: distingue reuso do PID
 
     if ([userTicks, systemTicks, startTime].some(value => !Number.isSafeInteger(value) || value < 0)) {
-        throw new Error('Contadores inválidos de /proc/PID/stat');
+        throw new Error('Invalid /proc/PID/stat counters');
     }
 
     return new ProcessTimes(userTicks + systemTicks, startTime);
