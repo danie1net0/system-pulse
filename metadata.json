@@ -1,7 +1,7 @@
 {
   "uuid": "system-pulse@danie1net0.gitlab.io",
   "name": "System Pulse",
-  "description": "Monitora CPU, RAM e swap com ranking de processos e preferências.",
+  "description": "Shows CPU and RAM usage in the top bar, with a menu ranking the heaviest processes, swap details and preferences. UI in English and Portuguese.",
   "shell-version": [
     "50"
   ],
