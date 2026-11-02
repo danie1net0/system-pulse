@@ -250,13 +250,14 @@ gerenciador de tarefas.
 
 ```sh
 sudo apt install xfce4-genmon-plugin   # uma vez, se ainda não tiver
-xfce/install.sh                        # copia para ~/.local/bin, sem sudo
+xfce/install.sh                        # copia para ~/.local/bin e adiciona ao painel
 ```
 
-Depois, clique com o botão direito no painel → **Painel → Adicionar novos itens →
-Monitor Genérico** e, nas propriedades, use o comando
-`~/.local/bin/system-pulse-genmon`, desmarque o rótulo e defina o período em
-2 segundos.
+Rode o instalador dentro da sessão XFCE: ele cria um item **Monitor Genérico** no
+primeiro painel, já com o comando, sem rótulo e com período de 2 segundos, e
+reinicia o painel. Rodar de novo não duplica o item. Com `--no-panel`, ele só copia
+o script e mostra como adicionar o item à mão (comando
+`~/.local/bin/system-pulse-genmon`).
 
 | Opção | Efeito |
 | --- | --- |

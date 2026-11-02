@@ -187,3 +187,113 @@ test('genmon guarda o estado em XDG_RUNTIME_DIR quando não há caminho explíci
     assert.match(readFileSync(join(runtime, 'system-pulse-genmon'), 'utf8'), /^1000 900 2 1\n$/);
 
 });
+
+const installer = fileURLToPath(new URL('../xfce/install.sh', import.meta.url));
+
+// Keeps each xfconf property in a file; arrays start with an "@array" line.
+const fakeXfconf = `#!/bin/sh
+prop=; list=false; create=false; array=false; values=
+while [ $# -gt 0 ]; do
+    case $1 in
+        -c|-t) shift 2 ;;
+        -p) prop=$2; shift 2 ;;
+        -l) list=true; shift ;;
+        -n) create=true; shift ;;
+        -a) array=true; shift ;;
+        -s) values="$values$2
+"; shift 2 ;;
+        *) exit 9 ;;
+    esac
+done
+$list && { ls "$FAKE_XFCONF" | tr % /; exit 0; }
+file=$FAKE_XFCONF/$(printf %s "$prop" | tr / %)
+if [ -n "$values" ]; then
+    [ -e "$file" ] || $create || exit 1
+    { $array && echo @array; printf %s "$values"; } >"$file"
+    exit 0
+fi
+[ -e "$file" ] || { echo "Property $prop does not exist" >&2; exit 1; }
+if [ "$(head -n 1 "$file")" = @array ]; then
+    echo "Value is an array with $(($(wc -l <"$file") - 1)) items:"; echo; tail -n +2 "$file"
+else
+    cat "$file"
+fi
+`;
+
+const panelFixture = (context: {after: (callback: () => void) => void}) => {
+    const root = mkdtempSync(join(tmpdir(), 'system-pulse-xfce-install-'));
+    const store = join(root, 'xfconf');
+    const bin = join(root, 'bin');
+    const plugins = join(root, 'plugins');
+
+    context.after(() => rmSync(root, {recursive: true, force: true}));
+    for (const directory of [store, bin, plugins]) mkdirSync(directory);
+    writeFileSync(join(plugins, 'libgenmon.so'), '');
+    writeFileSync(join(bin, 'xfconf-query'), fakeXfconf, {mode: 0o755});
+    writeFileSync(join(bin, 'xfce4-panel'), `#!/bin/sh\necho "$@" >>"${join(root, 'panel.log')}"\n`, {mode: 0o755});
+
+    const property = (name: string): string => join(store, name.replaceAll('/', '%'));
+    const set = (name: string, ...lines: string[]) => writeFileSync(property(name), `${lines.join('\n')}\n`);
+
+    return {
+        root,
+        set,
+        get: (name: string): string => readFileSync(property(name), 'utf8'),
+        target: join(root, 'home', '.local', 'bin', 'system-pulse-genmon'),
+        run(args: readonly string[] = [], environment: Record<string, string> = {}) {
+            const result = spawnSync('/bin/sh', [installer, ...args], {
+                encoding: 'utf8',
+                env: {PATH: `${bin}:${process.env.PATH}`, HOME: join(root, 'home'), FAKE_XFCONF: store,
+                    SYSTEM_PULSE_PANEL_PLUGINS: plugins, ...environment},
+            });
+
+            return {status: result.status, stdout: result.stdout, stderr: result.stderr};
+        },
+    };
+};
+
+test('instalador do XFCE adiciona o Monitor Genérico ao primeiro painel uma única vez', context => {
+    const environment = panelFixture(context);
+
+    environment.set('/panels', '@array', '1', '2');
+    environment.set('/panels/panel-1/plugin-ids', '@array', '1', '3');
+    environment.set('/plugins/plugin-1', 'separator');
+    environment.set('/plugins/plugin-3', 'clock');
+    environment.set('/plugins/plugin-7', 'systray');
+
+    const first = environment.run();
+
+    assert.equal(first.status, 0, first.stderr);
+    assert.match(first.stdout, /Adicionado ao painel 1 como plugin-8\./);
+    assert.equal(readFileSync(environment.target, 'utf8'), readFileSync(script, 'utf8'));
+    assert.equal(environment.get('/plugins/plugin-8'), 'genmon\n');
+    assert.equal(environment.get('/plugins/plugin-8/command'), `${environment.target}\n`);
+    assert.equal(environment.get('/plugins/plugin-8/use-label'), 'false\n');
+    assert.equal(environment.get('/plugins/plugin-8/update-period'), '2000\n');
+    assert.equal(environment.get('/panels/panel-1/plugin-ids'), '@array\n1\n3\n8\n');
+    assert.equal(readFileSync(join(environment.root, 'panel.log'), 'utf8'), '-r\n');
+
+    const second = environment.run();
+
+    assert.match(second.stdout, /O painel já tem o System Pulse \(plugin-8\)\./);
+    assert.equal(environment.get('/panels/panel-1/plugin-ids'), '@array\n1\n3\n8\n');
+});
+
+test('instalador do XFCE cai nas instruções manuais quando não pode mexer no painel', context => {
+    const environment = panelFixture(context);
+
+    assert.match(environment.run().stdout, /Não encontrei a configuração do painel[\s\S]*Comando: .*system-pulse-genmon/);
+    environment.set('/panels', '@array', '1');
+    environment.set('/panels/panel-1/plugin-ids', '@array', '1');
+
+    const skipped = environment.run(['--no-panel']);
+
+    assert.match(skipped.stdout, /Adicionar novos itens/);
+    assert.doesNotMatch(skipped.stdout, /Adicionado ao painel/);
+
+    const missing = environment.run([], {SYSTEM_PULSE_PANEL_PLUGINS: join(environment.root, 'nada')});
+
+    assert.match(missing.stdout, /sudo apt install xfce4-genmon-plugin/);
+    assert.equal(environment.get('/panels/panel-1/plugin-ids'), '@array\n1\n');
+    assert.equal(environment.run(['--desconhecido']).status, 2);
+});

@@ -1,12 +1,26 @@
 #!/bin/sh
-# Installs System Pulse for the XFCE panel in ~/.local/bin, without sudo.
-# The panel item itself is the Generic Monitor plugin (xfce4-genmon-plugin).
+# Installs System Pulse for the XFCE panel in ~/.local/bin, without sudo, and adds
+# a Generic Monitor (xfce4-genmon-plugin) item running it to the first panel.
 
 set -eu
+
+usage() {
+    echo "Usage: install.sh [--no-panel]"
+}
+
+add_panel=true
+while [ $# -gt 0 ]; do
+    case $1 in
+        --no-panel) add_panel=false; shift ;;
+        -h|--help) usage; exit 0 ;;
+        *) usage >&2; exit 2 ;;
+    esac
+done
 
 source_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 bin_dir=${XDG_BIN_HOME:-$HOME/.local/bin}
 target=$bin_dir/system-pulse-genmon
+plugins=${SYSTEM_PULSE_PANEL_PLUGINS:-/usr/lib/*/xfce4/panel/plugins /usr/lib/xfce4/panel/plugins}
 
 mkdir -p "$bin_dir"
 cp "$source_dir/system-pulse-genmon.sh" "$target.tmp"
@@ -16,13 +30,8 @@ mv -f "$target.tmp" "$target"
 echo "Instalado em $target"
 echo
 
-if ! ls /usr/lib/*/xfce4/panel/plugins/libgenmon.so /usr/lib/xfce4/panel/plugins/libgenmon.so >/dev/null 2>&1; then
-    echo "Falta o plugin Monitor Genérico. Instale com:"
-    echo "  sudo apt install xfce4-genmon-plugin"
-    echo
-fi
-
-cat <<EOF
+manual() {
+    cat <<EOF
 Para adicionar ao painel do XFCE:
   1. Clique com o botão direito no painel → Painel → Adicionar novos itens.
   2. Escolha "Monitor Genérico" (Generic Monitor).
@@ -33,3 +42,70 @@ Para adicionar ao painel do XFCE:
 
 Opções do comando: --mode both|cpu|ram, --count 1-20, --process-every N.
 EOF
+}
+
+genmon_installed() {
+    for dir in $plugins; do
+        [ -e "$dir/libgenmon.so" ] && return 0
+    done
+    return 1
+}
+
+panel_query() {
+    xfconf-query -c xfce4-panel "$@" 2>/dev/null
+}
+
+# Array values come one per line after a "Value is an array" header.
+panel_array() {
+    panel_query -p "$1" | grep -E '^[0-9]+$'
+}
+
+# Creates a genmon plugin in xfconf, appends it to the first panel and restarts
+# the panel so it loads. Returns 1 when the panel configuration is not reachable.
+add_to_panel() {
+    command -v xfconf-query >/dev/null 2>&1 || return 1
+    panel=$(panel_array /panels | head -n 1)
+    [ -n "$panel" ] || return 1
+
+    ids=$(panel_array "/panels/panel-$panel/plugin-ids" || true)
+    last=0
+    for id in $(panel_query -l | sed -n 's|^/plugins/plugin-\([0-9][0-9]*\)$|\1|p') $ids; do
+        if [ "$(panel_query -p "/plugins/plugin-$id")" = genmon ] &&
+            [ "$(panel_query -p "/plugins/plugin-$id/command")" = "$target" ]; then
+            echo "O painel já tem o System Pulse (plugin-$id)."
+            return 0
+        fi
+        [ "$id" -le "$last" ] || last=$id
+    done
+    id=$((last + 1))
+
+    panel_query -p "/plugins/plugin-$id" -n -t string -s genmon &&
+        panel_query -p "/plugins/plugin-$id/command" -n -t string -s "$target" &&
+        panel_query -p "/plugins/plugin-$id/use-label" -n -t bool -s false &&
+        panel_query -p "/plugins/plugin-$id/update-period" -n -t int -s 2000 || return 1
+
+    set --
+    for existing in $ids; do
+        set -- "$@" -t int -s "$existing"
+    done
+    panel_query -p "/panels/panel-$panel/plugin-ids" -n -a "$@" -t int -s "$id" || return 1
+
+    echo "Adicionado ao painel $panel como plugin-$id."
+    if ! xfce4-panel -r >/dev/null 2>&1; then
+        echo "Não consegui reiniciar o painel; ele aparece no próximo login."
+    fi
+}
+
+if ! genmon_installed; then
+    echo "Falta o plugin Monitor Genérico. Instale com:"
+    echo "  sudo apt install xfce4-genmon-plugin"
+    echo "e rode este instalador de novo para adicionar o item ao painel."
+    echo
+    manual
+elif ! $add_panel; then
+    manual
+elif ! add_to_panel; then
+    echo "Não encontrei a configuração do painel do XFCE (rode dentro da sessão XFCE)."
+    echo
+    manual
+fi

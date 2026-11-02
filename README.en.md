@@ -249,12 +249,14 @@ and the processes using the most RAM, and a click opens the task manager.
 
 ```sh
 sudo apt install xfce4-genmon-plugin   # once, if you do not have it yet
-xfce/install.sh                        # copies to ~/.local/bin, no sudo
+xfce/install.sh                        # copies to ~/.local/bin and adds it to the panel
 ```
 
-Then right-click the panel → **Panel → Add New Items → Generic Monitor** and, in
-its properties, use the command `~/.local/bin/system-pulse-genmon`, untick the
-label and set the period to 2 seconds.
+Run the installer inside the XFCE session: it creates a **Generic Monitor** item on
+the first panel, already set with the command, no label and a 2-second period, and
+restarts the panel. Running it again does not add a second item. With
+`--no-panel` it only copies the script and shows how to add the item by hand
+(command `~/.local/bin/system-pulse-genmon`).
 
 | Option | Effect |
 | --- | --- |
