@@ -8,7 +8,7 @@
 
 <p>
   <a href="https://extensions.gnome.org/extension/11577/system-pulse/"><img src="https://img.shields.io/badge/extensions%2Egnome%2Eorg-System_Pulse-4A86CF?style=for-the-badge&logo=gnome&logoColor=white" alt="Disponível no extensions.gnome.org"></a>
-  <img src="https://img.shields.io/badge/GNOME_Shell-50-4A86CF?style=for-the-badge&logo=gnome&logoColor=white" alt="GNOME Shell 50">
+  <img src="https://img.shields.io/badge/GNOME_Shell-48_%7C_49_%7C_50-4A86CF?style=for-the-badge&logo=gnome&logoColor=white" alt="GNOME Shell 48, 49 e 50">
   <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript em modo strict">
   <img src="https://img.shields.io/badge/Node.js-24+-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 24 ou superior">
   <img src="https://img.shields.io/badge/cobertura-100%25-54E1C1?style=for-the-badge" alt="Cobertura de testes de 100%">
@@ -125,7 +125,7 @@ atalho com o mascote.
 
 | | Requisito | Para quê |
 |:-:| --- | --- |
-| 🐧 | Linux com **GNOME Shell 50** | Executar a extensão. |
+| 🐧 | Linux com **GNOME Shell 48, 49 ou 50** | Executar a extensão. |
 | 🟢 | **Node.js 24+** e **npm** | Executar o instalador e compilar o TypeScript. |
 | 📋 | **`ps`**, do pacote `procps` | Consultar os processos. |
 | 🧩 | **`glib-compile-schemas`** (`libglib2.0-bin` no Ubuntu) | Compilar as preferências GSettings. |

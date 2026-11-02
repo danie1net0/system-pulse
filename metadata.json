@@ -3,6 +3,8 @@
   "name": "System Pulse",
   "description": "Shows CPU and RAM usage in the top bar, with a menu ranking the heaviest processes, swap details and preferences. UI in English and Portuguese.",
   "shell-version": [
+    "48",
+    "49",
     "50"
   ],
   "version": 1,

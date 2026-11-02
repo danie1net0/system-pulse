@@ -8,7 +8,7 @@
 
 <p>
   <a href="https://extensions.gnome.org/extension/11577/system-pulse/"><img src="https://img.shields.io/badge/extensions%2Egnome%2Eorg-System_Pulse-4A86CF?style=for-the-badge&logo=gnome&logoColor=white" alt="Available on extensions.gnome.org"></a>
-  <img src="https://img.shields.io/badge/GNOME_Shell-50-4A86CF?style=for-the-badge&logo=gnome&logoColor=white" alt="GNOME Shell 50">
+  <img src="https://img.shields.io/badge/GNOME_Shell-48_%7C_49_%7C_50-4A86CF?style=for-the-badge&logo=gnome&logoColor=white" alt="GNOME Shell 48, 49 and 50">
   <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript in strict mode">
   <img src="https://img.shields.io/badge/Node.js-24+-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 24 or later">
   <img src="https://img.shields.io/badge/coverage-100%25-54E1C1?style=for-the-badge" alt="100% test coverage">
@@ -125,7 +125,7 @@ create the mascot launcher.
 
 | | Requirement | Used for |
 |:-:| --- | --- |
-| 🐧 | Linux with **GNOME Shell 50** | Running the extension. |
+| 🐧 | Linux with **GNOME Shell 48, 49 or 50** | Running the extension. |
 | 🟢 | **Node.js 24+** and **npm** | Running the installer and compiling TypeScript. |
 | 📋 | **`ps`**, from the `procps` package | Querying processes. |
 | 🧩 | **`glib-compile-schemas`** (`libglib2.0-bin` on Ubuntu) | Compiling the GSettings preferences. |
