@@ -257,7 +257,8 @@ Rode o instalador dentro da sessão XFCE: ele cria um item **Monitor Genérico**
 primeiro painel, já com o comando, sem rótulo e com período de 2 segundos, e
 reinicia o painel. Rodar de novo não duplica o item. Com `--no-panel`, ele só copia
 o script e mostra como adicionar o item à mão (comando
-`~/.local/bin/system-pulse-genmon`).
+`~/.local/bin/system-pulse-genmon`). Para remover, rode `xfce/install.sh --uninstall`:
+ele tira o item de todos os painéis e apaga o script.
 
 | Opção | Efeito |
 | --- | --- |

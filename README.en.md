@@ -256,7 +256,8 @@ Run the installer inside the XFCE session: it creates a **Generic Monitor** item
 the first panel, already set with the command, no label and a 2-second period, and
 restarts the panel. Running it again does not add a second item. With
 `--no-panel` it only copies the script and shows how to add the item by hand
-(command `~/.local/bin/system-pulse-genmon`).
+(command `~/.local/bin/system-pulse-genmon`). To remove it, run
+`xfce/install.sh --uninstall`: it takes the item off every panel and deletes the script.
 
 | Option | Effect |
 | --- | --- |

@@ -1,17 +1,20 @@
 #!/bin/sh
 # Installs System Pulse for the XFCE panel in ~/.local/bin, without sudo, and adds
 # a Generic Monitor (xfce4-genmon-plugin) item running it to the first panel.
+# --uninstall removes those items and the script.
 
 set -eu
 
 usage() {
-    echo "Usage: install.sh [--no-panel]"
+    echo "Usage: install.sh [--no-panel | --uninstall]"
 }
 
 add_panel=true
+uninstall=false
 while [ $# -gt 0 ]; do
     case $1 in
         --no-panel) add_panel=false; shift ;;
+        --uninstall) uninstall=true; shift ;;
         -h|--help) usage; exit 0 ;;
         *) usage >&2; exit 2 ;;
     esac
@@ -21,14 +24,6 @@ source_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 bin_dir=${XDG_BIN_HOME:-$HOME/.local/bin}
 target=$bin_dir/system-pulse-genmon
 plugins=${SYSTEM_PULSE_PANEL_PLUGINS:-/usr/lib/*/xfce4/panel/plugins /usr/lib/xfce4/panel/plugins}
-
-mkdir -p "$bin_dir"
-cp "$source_dir/system-pulse-genmon.sh" "$target.tmp"
-chmod 755 "$target.tmp"
-mv -f "$target.tmp" "$target"
-
-echo "Instalado em $target"
-echo
 
 manual() {
     cat <<EOF
@@ -70,8 +65,7 @@ add_to_panel() {
     ids=$(panel_array "/panels/panel-$panel/plugin-ids" || true)
     last=0
     for id in $(panel_query -l | sed -n 's|^/plugins/plugin-\([0-9][0-9]*\)$|\1|p') $ids; do
-        if [ "$(panel_query -p "/plugins/plugin-$id")" = genmon ] &&
-            [ "$(panel_query -p "/plugins/plugin-$id/command")" = "$target" ]; then
+        if ours "$id"; then
             echo "O painel já tem o System Pulse (plugin-$id)."
             return 0
         fi
@@ -95,6 +89,70 @@ add_to_panel() {
         echo "Não consegui reiniciar o painel; ele aparece no próximo login."
     fi
 }
+
+# True when plugin-$1 is a genmon item running this script.
+ours() {
+    [ "$(panel_query -p "/plugins/plugin-$1")" = genmon ] &&
+        [ "$(panel_query -p "/plugins/plugin-$1/command")" = "$target" ]
+}
+
+# Drops our items from every panel and from xfconf, then restarts the panel.
+remove_from_panel() {
+    command -v xfconf-query >/dev/null 2>&1 || return 1
+    panels=$(panel_array /panels) || return 1
+    removed=
+    for panel in $panels; do
+        set --
+        changed=false
+        for id in $(panel_array "/panels/panel-$panel/plugin-ids" || true); do
+            if ours "$id"; then
+                removed="$removed $id"
+                echo "Removido do painel $panel (plugin-$id)."
+                changed=true
+            else
+                set -- "$@" -t int -s "$id"
+            fi
+        done
+        $changed || continue
+        if [ $# -gt 0 ]; then
+            panel_query -p "/panels/panel-$panel/plugin-ids" -n -a "$@"
+        else
+            panel_query -p "/panels/panel-$panel/plugin-ids" -r
+        fi
+    done
+    if [ -z "$removed" ]; then
+        echo "Nenhum item do System Pulse no painel."
+        return 0
+    fi
+    # genmon saves its settings again while the panel restarts, so they are
+    # cleared once the old instance is gone.
+    if xfce4-panel -r >/dev/null 2>&1; then
+        sleep 2
+    else
+        echo "Não consegui reiniciar o painel; ele some no próximo login."
+    fi
+    for id in $removed; do
+        panel_query -p "/plugins/plugin-$id" -r -R || true
+    done
+}
+
+if $uninstall; then
+    remove_from_panel || echo "Não encontrei a configuração do painel do XFCE; remova o item à mão, se houver."
+    for state in "${XDG_RUNTIME_DIR:-/nonexistent}/system-pulse-genmon" "/tmp/system-pulse-genmon-$(id -u)"; do
+        rm -f "$state" "$state.processes"
+    done
+    rm -f "$target"
+    echo "Removido $target"
+    exit 0
+fi
+
+mkdir -p "$bin_dir"
+cp "$source_dir/system-pulse-genmon.sh" "$target.tmp"
+chmod 755 "$target.tmp"
+mv -f "$target.tmp" "$target"
+
+echo "Instalado em $target"
+echo
 
 if ! genmon_installed; then
     echo "Falta o plugin Monitor Genérico. Instale com:"

@@ -192,7 +192,7 @@ const installer = fileURLToPath(new URL('../xfce/install.sh', import.meta.url));
 
 // Keeps each xfconf property in a file; arrays start with an "@array" line.
 const fakeXfconf = `#!/bin/sh
-prop=; list=false; create=false; array=false; values=
+prop=; list=false; create=false; array=false; reset=false; values=
 while [ $# -gt 0 ]; do
     case $1 in
         -c|-t) shift 2 ;;
@@ -200,6 +200,8 @@ while [ $# -gt 0 ]; do
         -l) list=true; shift ;;
         -n) create=true; shift ;;
         -a) array=true; shift ;;
+        -r) reset=true; shift ;;
+        -R) shift ;;
         -s) values="$values$2
 "; shift 2 ;;
         *) exit 9 ;;
@@ -207,6 +209,7 @@ while [ $# -gt 0 ]; do
 done
 $list && { ls "$FAKE_XFCONF" | tr % /; exit 0; }
 file=$FAKE_XFCONF/$(printf %s "$prop" | tr / %)
+$reset && { rm -f "$file" "$file"%*; exit 0; }
 if [ -n "$values" ]; then
     [ -e "$file" ] || $create || exit 1
     { $array && echo @array; printf %s "$values"; } >"$file"
@@ -296,4 +299,36 @@ test('instalador do XFCE cai nas instruções manuais quando não pode mexer no 
     assert.match(missing.stdout, /sudo apt install xfce4-genmon-plugin/);
     assert.equal(environment.get('/panels/panel-1/plugin-ids'), '@array\n1\n');
     assert.equal(environment.run(['--desconhecido']).status, 2);
+});
+
+test('instalador do XFCE remove os itens do System Pulse de todos os painéis com --uninstall', context => {
+    const environment = panelFixture(context);
+    const runtime = join(environment.root, 'runtime');
+
+    mkdirSync(runtime);
+    writeFileSync(join(runtime, 'system-pulse-genmon'), '1 1 1 1\n');
+    writeFileSync(join(runtime, 'system-pulse-genmon.processes'), '');
+    environment.set('/panels', '@array', '1', '2');
+    environment.set('/panels/panel-1/plugin-ids', '@array', '1');
+    environment.set('/panels/panel-2/plugin-ids', '@array', '4');
+    environment.set('/plugins/plugin-1', 'clock');
+    environment.set('/plugins/plugin-4', 'genmon');
+    environment.run();
+    environment.set('/plugins/plugin-4/command', environment.target);
+
+    const removed = environment.run(['--uninstall'], {XDG_RUNTIME_DIR: runtime});
+
+    assert.equal(removed.status, 0, removed.stderr);
+    assert.match(removed.stdout, /Removido do painel 1 \(plugin-5\)\.\nRemovido do painel 2 \(plugin-4\)\./);
+    assert.equal(environment.get('/panels/panel-1/plugin-ids'), '@array\n1\n');
+    assert.throws(() => environment.get('/panels/panel-2/plugin-ids'));
+    assert.throws(() => environment.get('/plugins/plugin-5/command'));
+    assert.equal(environment.get('/plugins/plugin-1'), 'clock\n');
+    assert.throws(() => readFileSync(environment.target));
+    assert.throws(() => readFileSync(join(runtime, 'system-pulse-genmon')));
+    assert.equal(readFileSync(join(environment.root, 'panel.log'), 'utf8'), '-r\n-r\n');
+
+    assert.match(environment.run(['--uninstall']).stdout, /Nenhum item do System Pulse no painel\./);
+    rmSync(join(environment.root, 'xfconf'), {recursive: true});
+    assert.match(environment.run(['--uninstall']).stdout, /remova o item à mão/);
 });
